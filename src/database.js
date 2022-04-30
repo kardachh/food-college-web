@@ -1,14 +1,24 @@
-const { Pool, Client } = require('pg')
-
+const {Pool, Client} = require('pg')
 const connectionString = 'postgresql://postgres:@localhost:1111/Students'
-exports.pool = new Pool({
-    connectionString,
-})
 
-// pool.query('SELECT NOW()', (err, res) => {
-//     console.log(err, res)
-//     pool.end()
-// })
+
+module.exports = {
+    getUser: async (login,password) => {
+        const client = new Client({
+            connectionString,
+        })
+
+        const getData = async () =>{
+            client.connect()
+            return await client.query(`SELECT * from "users" where login='${login}' and password='${password}'`).then(res => {
+                client.end();
+                return res.rows
+            })
+        }
+
+        return await getData()
+    }
+}
 
 // const client = new Client({
 //     user: 'postgres',
