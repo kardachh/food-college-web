@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Группы</title>
+  <link rel="stylesheet" type="text/css" href="/static/css/output.css" />
+</head>
+<body>
+  <div class="text-2xl">Группы</div>
+</body>
+</html>
+<script>
+  fetch("/api/getGroups")
+    .then((res) => res.json())
+    .then((res) => {
+      console.log(Object.getOwnPropertyNames(res));
+    });
+</script>

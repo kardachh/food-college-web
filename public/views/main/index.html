@@ -1,19 +1,76 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Главная</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/output.css">
-</head>
-<body>
-<div class="text-4xl font-light">
-    Главная
-</div>
-<div class="absolute top-0 right-0 border border-red-600 w-[300px] h-[140px]">
-    <div>???</div>
-</div>
-</body>
+    <link rel="stylesheet" type="text/css" href="/static/css/output.css" />
+  </head>
+
+  <body>
+    <div class="absolute w-[100%] h-[100%] flex justify-center items-center">
+      <div
+        id="main-menu"
+        class="min-h-[400px] min-w-[300px] border border-[#FCB894] rounded-xl flex flex-col justify-around items-center"
+      >
+        <div class="text-2xl">Меню</div>
+        <div id="button-list"></div>
+      </div>
+    </div>
+  </body>
 </html>
+
+<script>
+  const addButtons = (userRole) => {
+    console.log(userRole);
+    const urls = {
+      admin: [
+        { name: "Группы", url: "/groups" },
+        { name: "Дисциплины", url: "/disciplines" },
+        { name: "Преподаватели", url: "/teachers" },
+        { name: "Зачетная книжка", url: "/record-book" }
+      ],
+      teacher: [
+        { name: "Группы", url: "/groups" },
+        { name: "Дисциплины", url: "/disciplines" },
+        { name: "Зачетная книжка", url: "/record-book" }
+      ],
+      student: [{ name: "Зачетная книжка", url: "/record-book" }],
+    };
+    const buttonList = document.getElementById("button-list");
+    const setButtons = (type) => {
+      type.forEach((url) => {
+        buttonList.innerHTML += `
+          <a href="${url.url}" class = "cursor-pointer border border-[#FCB894] rounded-xl px-10 py-3 hover:bg-[#FCB894] my-3 hover:text-white flex justify-center items-center">
+              ${url.name}
+          </a>
+        `;
+      });
+    };
+    switch (userRole) {
+      case "admin": {
+        setButtons(urls.admin);
+        break;
+      }
+      case "teacher": {
+        setButtons(urls.teacher);
+        break;
+      }
+      case "student": {
+        setButtons(urls.student);
+        break;
+      }
+    }
+  };
+
+  fetch("/api/getUserData")
+    .then((res) => res.json())
+    .then((userData) => {
+      console.table(userData);
+      addButtons(userData.role);
+    });
+</script>

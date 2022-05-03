@@ -1,36 +1,43 @@
-const {Pool, Client} = require('pg')
-const connectionString = 'postgresql://postgres:@localhost:1111/Students'
+const { Client } = require("pg");
+const _ = require('lodash');
 
+const connectionString = "postgresql://postgres:@localhost:1111/Students";
 
 module.exports = {
-    getUser: async (login,password) => {
-        const client = new Client({
-            connectionString,
-        })
+  getUserData: async (login, password) => {
+    const getUserData = async () => {
+      const client = new Client({
+        connectionString,
+      });
+      client.connect();
+      return await client
+        .query(
+          `SELECT * from "users" where login='${login}' and password='${password}'`
+        )
+        .then((res) => {
+          client.end();
+          return res.rows;
+        });
+    };
 
-        const getData = async () =>{
-            client.connect()
-            return await client.query(`SELECT * from "users" where login='${login}' and password='${password}'`).then(res => {
-                client.end();
-                return res.rows
-            })
-        }
+    return await getUserData();
+  },
 
-        return await getData()
-    }
-}
-
-// const client = new Client({
-//     user: 'postgres',
-//     host: 'localhost',
-//     database: 'Students',
-//     password: '',
-//     port: 1111,
-// })
-//
-// client.connect()
-//
-// client.query('SELECT NOW()', (err, res) => {
-//     console.log(err, res)
-//     client.end()
-// })
+  getGroups: async () => {
+    const getGroups = async () => {
+      const client = new Client({
+        connectionString,
+      });
+      client.connect();
+      return await client
+        .query(
+          `SELECT * from "group_with_students"`
+        )
+        .then((res) => {
+          client.end();
+          return res.rows;
+        });
+    };
+    return await getGroups().then(res => _.groupBy(res, group => group.name))
+  }
+};
