@@ -9,13 +9,84 @@
   <link rel="stylesheet" type="text/css" href="/static/css/output.css" />
 </head>
 <body>
-  <div class="text-2xl">Группы</div>
+<div class="text-2xl">Группы</div>
+<div id="course-select" class="py-6 flex overflow-x-auto"></div>
+<div id="students-list" class="mt-10 p-6 rounded-2xl overflow-hidden grid grid-cols-12">
+
+</div>
 </body>
 </html>
 <script>
+  let selectedGroup;
+  let students;
+
+
+  const generateGroupsRow = (data) => {
+    const row = document.getElementById("course-select");
+    data.map((group) => {
+      const groupEl = document.createElement("div");
+      groupEl.id = `group-${group.id}`;
+      groupEl.classList.add("group", "py-[20px]", "w-full", "cursor-pointer", "rounded-2xl", "flex", "justify-center", "items-center", "mx-[20px]");
+      groupEl.innerHTML = `
+                <div class = "px-4">${group.name}</div>
+            `;
+      row.append(groupEl);
+    });
+  };
+
+  const generateStudentList = (students) => {
+    const list = document.getElementById("students-list");
+    const headers = `
+      <div class = "col-span-1 border flex justify-center items-center py-3">№</div>
+      <div class = "col-span-4 border p-3">Фамилия</div>
+      <div class = "col-span-3 border p-3">Имя</div>
+      <div class = "col-span-4 border p-3">Отчество</div>
+    `;
+    list.innerHTML = `${headers}`;
+    students.forEach(student=>{
+      list.innerHTML +=
+        `
+      <div class = "col-span-1 border flex justify-center items-center py-3">${student.id}</div>
+      <div class = "col-span-4 border p-3">${student.lastname}</div>
+      <div class = "col-span-3 border p-3">${student.firstname}</div>
+      <div class = "col-span-4 border p-3">${student.secondname}</div>
+    `
+    })
+  };
+
+  const handleGroupClick = (event)=>{
+    const id = event.target.id.split("-")[1];
+    const groups = document.getElementsByClassName('group');
+    if (id){
+      selectedGroup = event.target.id.split("-")[1]
+      Array.from(groups).forEach((el) => {
+        el.classList.remove("shadow-md", "text-white", "bg-[#2E9ECB]");
+      });
+      document.getElementById(`group-${id}`).classList.add("shadow-md");
+      console.log(id)
+      console.log(students.filter((student)=>student.group_id == id))
+      generateStudentList(students.filter((student)=>student.group_id == id))
+    }
+  }
+
   fetch("/api/getGroups")
     .then((res) => res.json())
     .then((res) => {
-      console.log(Object.getOwnPropertyNames(res));
+      console.table(res);
+      generateGroupsRow(res);
+      selectedGroup = res[0].id
+      const groups = document.getElementsByClassName('group');
+      console.log(groups)
+      Array.from(groups).forEach((el)=>{
+        el.addEventListener('click',handleGroupClick)
+      })
+    });
+
+  fetch("/api/getStudents")
+    .then((res) => res.json())
+    .then((res) => {
+      console.table(res);
+      students = res
+      // generateStudentList(res);
     });
 </script>

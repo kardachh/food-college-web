@@ -65,6 +65,11 @@
         break;
       }
     }
+    // кнопка выхода из аккаунта
+    buttonList.innerHTML+=
+      `
+      <a href="/logout" class = "cursor-pointer border border-red-500 rounded-xl py-3 hover:bg-red-500 my-3 hover:text-white flex justify-center items-center">Выход</a>
+      `
   };
 
   fetch("/api/getUserData")

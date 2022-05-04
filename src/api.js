@@ -1,5 +1,5 @@
 const express = require("express");
-const { getGroups } = require("./database");
+const { getGroups, getStudents } = require("./database");
 const apiRouter = express.Router();
 
 apiRouter.use((req, res, next) => {
@@ -21,6 +21,11 @@ apiRouter.get("/getUserData", (req, res) => {
 
 apiRouter.get("/getGroups", async (req, res) => {
   const data = await getGroups()
+  req.session.authenticated ? res.json(data) : res.redirect("/authorization");
+});
+
+apiRouter.get("/getStudents", async (req, res) => {
+  const data = await getStudents()
   req.session.authenticated ? res.json(data) : res.redirect("/authorization");
 });
 
