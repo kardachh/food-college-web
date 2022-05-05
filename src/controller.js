@@ -4,7 +4,7 @@ const { apiRouter } = require("./api");
 const router = express.Router();
 
 router.use((req, res, next) => {
-  console.log(req.path);
+  console.log(req.method,req.path);
   next();
 });
 

@@ -8,21 +8,167 @@
   <title>Группы</title>
   <link rel="stylesheet" type="text/css" href="/static/css/output.css" />
 </head>
-<body>
+<body class="m-10">
 <div class="text-2xl">Группы</div>
-<div id="course-select" class="py-6 flex overflow-x-auto"></div>
-<div id="students-list" class="mt-10 p-6 rounded-2xl overflow-hidden grid grid-cols-12">
+<div class="flex">
+  <div id="course-select" class="py-6 flex overflow-x-auto w-[90%]"></div>
+  <div class="flex flex-col justify-around items-center w-[10%]">
+    <img id="add-group" class="cursor-pointer opacity-25 hover:opacity-100" src="/static/images/add.svg"
+         alt="Добавить группу">
+    <img id="update-group" class="cursor-pointer opacity-25 hover:opacity-100" src="/static/images/edit.svg"
+         alt="Изменить">
+    <img id="delete-group" class="cursor-pointer opacity-25 hover:opacity-100" src="/static/images/close.svg"
+         alt="Удалить">
+  </div>
+</div>
+<div id="students-list" class="mt-10 py-6 rounded-2xl overflow-hidden grid grid-cols-12">
+</div>
+<div id="modal-bg"
+     class="hidden fixed z-10 left-0 top-0 w-[100%] h-[100%] overflow-auto bg-[rgba(0,0,0,0.2)] flex flex-col justify-center items-center">
+  <div id="modal-add" class="hidden min-w-[400px] min-h-[250px] bg-white rounded-2xl p-10 relative">
+    <div class="mb-10 text-3xl font-bold">
+      Добавление группы:
+    </div>
+    <form id="addForm" method="post" action="/api/addGroup" class="flex flex-col justify-between">
+      <label>
+        Наименование:
+        <input class="border" name="name" type="text" required>
+      </label>
+      <br>
+      <button type="submit" class="border border-[#FCB894] rounded-2xl hover:bg-[#FCB894] py-3 px-10 hover:text-white">
+        Добавить
+      </button>
+    </form>
+    <div class="close-modal absolute top-3 right-3 cursor-pointer">
+      <img src="/static/images/close.svg" alt="закрыть" />
+    </div>
+  </div>
+
+  <div id="modal-update" class="hidden min-w-[400px] min-h-[250px] bg-white rounded-2xl p-10 relative">
+    <div class="mb-10 text-3xl font-bold">
+      Изменение группы:
+    </div>
+    <form id="updateForm" method="post" action="/api/addGroup" class="flex flex-col justify-between">
+      <label>
+        Наименование:
+        <input class="border" name="name" type="text" required>
+      </label>
+      <input type="hidden" name="id" value="">
+      <br>
+      <button type="submit" class="border border-[#FCB894] rounded-2xl hover:bg-[#FCB894] py-3 px-10 hover:text-white">
+        Изменить
+      </button>
+    </form>
+    <div class="close-modal absolute top-3 right-3 cursor-pointer">
+      <img src="/static/images/close.svg" alt="закрыть" />
+    </div>
+  </div>
+
+  <div id="modal-delete" class="hidden min-w-[400px] min-h-[250px] bg-white rounded-2xl p-10 relative">
+    <div class="mb-10 text-3xl font-bold">
+      Удаление группы:
+    </div>
+    <form id="deleteForm" method="post" action="/api/addGroup" class="flex flex-col justify-between">
+      <br>
+      <input type="hidden" name="id" value="">
+      <button type="submit" class="border border-red-500 rounded-2xl hover:bg-red-500 py-3 px-10 hover:text-white">
+        Удалить
+      </button>
+      <br>
+      <button type="submit" class="border border-[#FCB894] rounded-2xl hover:bg-[#FCB894] py-3 px-10 hover:text-white">
+        Отмена
+      </button>
+    </form>
+    <div class="close-modal absolute top-3 right-3 cursor-pointer">
+      <img src="/static/images/close.svg" alt="закрыть" />
+    </div>
+  </div>
 
 </div>
 </body>
 </html>
 <script>
   let selectedGroup;
+  let groups;
   let students;
 
+  const formToJSON = (elements) => [].reduce.call(
+    elements,
+    (data, element) => {
+      element.name ? (data[element.name] = element.value) : {};
+      return data;
+    },
+    {}
+  );
+
+  const handleFormSubmit = (event, method) => {
+    event.preventDefault();
+    const data = formToJSON(event.target.elements);
+    console.log(data);
+    const jdata = JSON.stringify(data);
+    (async () => {
+      const rawResponse = await fetch("/api/groups", {
+        method: method,
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: jdata
+      });
+      const content = await rawResponse.json();
+      console.log(content);
+      getGroups();
+      document.getElementsByClassName("close-modal");
+    })();
+  };
+
+  const handleChange = (e) => {
+    document.getElementById("modal-bg").classList.remove("hidden");
+    switch (e.target.id) {
+      case ("add-group"): {
+        console.log("add-group");
+        document.getElementById("modal-add").classList.remove("hidden");
+        break;
+      }
+      case ("update-group"): {
+        console.log("update-group");
+        document.getElementById("modal-update").classList.remove("hidden");
+        document.getElementById("updateForm").children["id"].value = selectedGroup;
+        console.log(document.getElementById("updateForm").children[0].children["name"].value = groups.find((group) => group.id == selectedGroup).name);
+        // document.getElementById('updateForm').children[1].value = selectedGroup
+        break;
+      }
+      case ("delete-group"): {
+        console.log("delete-group");
+        document.getElementById("modal-delete").classList.remove("hidden");
+        document.getElementById("deleteForm").children["id"].value = selectedGroup;
+        break;
+      }
+    }
+  };
+
+  // клики по кнопкам (добавить/изменить/удалить) групп
+  document.getElementById("add-group").addEventListener("click", handleChange);
+  document.getElementById("update-group").addEventListener("click", handleChange);
+  document.getElementById("delete-group").addEventListener("click", handleChange);
+
+  // сабмит формы (добавить/изменит/удалить) групп
+  document.getElementById("addForm").addEventListener("submit", (e) => handleFormSubmit(e, "post"));
+  document.getElementById("updateForm").addEventListener("submit", (e) => handleFormSubmit(e, "put"));
+  document.getElementById("deleteForm").addEventListener("submit", (e) => handleFormSubmit(e, "delete"));
+
+  Array.from(document.getElementsByClassName("close-modal")).forEach((el) => {
+    el.addEventListener("click", () => {
+      document.getElementById("modal-add").classList.add("hidden");
+      document.getElementById("modal-update").classList.add("hidden");
+      document.getElementById("modal-delete").classList.add("hidden");
+      document.getElementById("modal-bg").classList.add("hidden");
+    });
+  });
 
   const generateGroupsRow = (data) => {
     const row = document.getElementById("course-select");
+    row.innerHTML = "";
     data.map((group) => {
       const groupEl = document.createElement("div");
       groupEl.id = `group-${group.id}`;
@@ -43,50 +189,52 @@
       <div class = "col-span-4 border p-3">Отчество</div>
     `;
     list.innerHTML = `${headers}`;
-    students.forEach(student=>{
+    students.forEach((student, index) => {
       list.innerHTML +=
         `
-      <div class = "col-span-1 border flex justify-center items-center py-3">${student.id}</div>
+      <div class = "col-span-1 border flex justify-center items-center py-3">${index + 1}</div>
       <div class = "col-span-4 border p-3">${student.lastname}</div>
       <div class = "col-span-3 border p-3">${student.firstname}</div>
       <div class = "col-span-4 border p-3">${student.secondname}</div>
-    `
-    })
+    `;
+    });
   };
 
-  const handleGroupClick = (event)=>{
-    const id = event.target.id.split("-")[1];
-    const groups = document.getElementsByClassName('group');
-    if (id){
-      selectedGroup = event.target.id.split("-")[1]
+  const handleGroupClick = (event) => {
+    const id = event.target.id ? event.target.id.split("-")[1] : event.path[1].id.split("-")[1];
+    const groups = document.getElementsByClassName("group");
+    if (id) {
+      selectedGroup = id;
       Array.from(groups).forEach((el) => {
         el.classList.remove("shadow-md", "text-white", "bg-[#2E9ECB]");
       });
       document.getElementById(`group-${id}`).classList.add("shadow-md");
-      console.log(id)
-      console.log(students.filter((student)=>student.group_id == id))
-      generateStudentList(students.filter((student)=>student.group_id == id))
+      generateStudentList(students.filter((student) => student.group_id == id));
     }
-  }
+  };
 
-  fetch("/api/getGroups")
-    .then((res) => res.json())
-    .then((res) => {
-      console.table(res);
-      generateGroupsRow(res);
-      selectedGroup = res[0].id
-      const groups = document.getElementsByClassName('group');
-      console.log(groups)
-      Array.from(groups).forEach((el)=>{
-        el.addEventListener('click',handleGroupClick)
-      })
-    });
+  const getGroups = () => {
+    fetch("/api/groups")
+      .then((res) => res.json())
+      .then((res) => {
+        console.table(res);
+        groups = res;
+        generateGroupsRow(res);
+        selectedGroup = res[0].id;
+        const groupsEl = document.getElementsByClassName("group");
+        Array.from(groupsEl).forEach((el) => {
+          el.addEventListener("click", handleGroupClick);
+        });
+      });
+  };
+
+  getGroups();
 
   fetch("/api/getStudents")
     .then((res) => res.json())
     .then((res) => {
       console.table(res);
-      students = res
+      students = res;
       // generateStudentList(res);
     });
 </script>
