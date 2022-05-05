@@ -28,8 +28,6 @@ router.get("/record-book", (req, res) => {
     : res.redirect("/authorization");
 });
 
-
-
 router.get("/authorization", (req, res) => {
   req.session.authenticated
     ? res.redirect("/")
@@ -56,7 +54,7 @@ router.post("/login", async (req, res) => {
           },
         });
       } else {
-        res.status(403).json({ msg: "bad credentials1" });
+        res.status(403).json({ msg: "bad credentials" });
       }
     }
   } else {
