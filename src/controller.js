@@ -24,7 +24,7 @@ router.get("/groups", (req, res) => {
 
 router.get("/record-book", (req, res) => {
   req.session.authenticated
-    ? res.sendFile(path.join(path.resolve(), "/public/views/record-book/student.html"))
+    ? req.session.user.role==='student' ? res.sendFile(path.join(path.resolve(), "/public/views/record-book/student.html")): res.json(req.session.user)
     : res.redirect("/authorization");
 });
 

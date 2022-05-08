@@ -1,203 +1,286 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Группы</title>
-  <link rel="stylesheet" type="text/css" href="/static/css/output.css" />
-</head>
-<body class="m-10">
-<div class="text-2xl">Группы</div>
-<div class="flex">
-  <div id="course-select" class="py-6 flex overflow-x-auto w-[90%]"></div>
-  <div class="flex flex-col justify-around items-center w-[10%]">
-    <img id="add-group" class="cursor-pointer opacity-25 hover:opacity-100" src="/static/images/add.svg"
-         alt="Добавить группу">
-    <img id="update-group" class="cursor-pointer opacity-25 hover:opacity-100" src="/static/images/edit.svg"
-         alt="Изменить группу">
-    <img id="delete-group" class="cursor-pointer opacity-25 hover:opacity-100" src="/static/images/close.svg"
-         alt="Удалить группу">
-  </div>
-</div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Группы</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/output.css" />
+  </head>
+  <body class="m-10">
+    <a href="../" class="absolute top-0 left-0"><-- Назад</a>
+    <div class="text-2xl">Группы</div>
+    <div class="flex">
+      <div id="course-select" class="py-6 flex overflow-x-auto w-[90%]"></div>
+      <div class="flex flex-col justify-around items-center w-[10%]">
+        <img
+          id="add-group"
+          class="cursor-pointer opacity-25 hover:opacity-100"
+          src="/static/images/add.svg"
+          alt="Добавить группу"
+        />
+        <img
+          id="update-group"
+          class="cursor-pointer opacity-25 hover:opacity-100"
+          src="/static/images/edit.svg"
+          alt="Изменить группу"
+        />
+        <img
+          id="delete-group"
+          class="cursor-pointer opacity-25 hover:opacity-100"
+          src="/static/images/close.svg"
+          alt="Удалить группу"
+        />
+      </div>
+    </div>
 
-<div id="students-list" class="mt-10 py-6 rounded-2xl overflow-hidden grid grid-cols-12"></div>
+    <div
+      id="students-list"
+      class="mt-10 py-6 rounded-2xl overflow-hidden grid grid-cols-12"
+    ></div>
 
-<div class="flex justify-around items-center w-[10%]">
-  <img id="add-student" class="cursor-pointer opacity-25 hover:opacity-100" src="/static/images/add.svg"
-       alt="Добавить студента">
-  <img id="update-student" class="cursor-pointer opacity-25 hover:opacity-100" src="/static/images/edit.svg"
-       alt="Изменить студента">
-  <img id="delete-student" class="cursor-pointer opacity-25 hover:opacity-100" src="/static/images/close.svg"
-       alt="Удалить студента">
-</div>
-<!-- modal windows -->
-<div id="modal-bg"
-     class="hidden fixed z-10 left-0 top-0 w-[100%] h-[100%] overflow-auto bg-[rgba(0,0,0,0.2)] flex flex-col justify-center items-center">
-  <div id="modal-add-group" class="hidden min-w-[400px] min-h-[250px] bg-white rounded-2xl p-10 relative">
-    <div class="mb-10 text-3xl font-bold">
-      Добавление группы:
+    <div class="flex justify-around items-center w-[10%]">
+      <img
+        id="add-student"
+        class="cursor-pointer opacity-25 hover:opacity-100"
+        src="/static/images/add.svg"
+        alt="Добавить студента"
+      />
+      <img
+        id="update-student"
+        class="cursor-pointer opacity-25 hover:opacity-100"
+        src="/static/images/edit.svg"
+        alt="Изменить студента"
+      />
+      <img
+        id="delete-student"
+        class="cursor-pointer opacity-25 hover:opacity-100"
+        src="/static/images/close.svg"
+        alt="Удалить студента"
+      />
     </div>
-    <form id="addGroupForm" method="post" action="/api/addGroup" class="flex flex-col justify-between">
-      <label>
-        Наименование:
-        <input class="border" name="name" type="text" required>
-      </label>
-      <br>
-      <button type="submit" class="border border-[#FCB894] rounded-2xl hover:bg-[#FCB894] py-3 px-10 hover:text-white">
-        Добавить
-      </button>
-    </form>
-    <div class="close-modal absolute top-3 right-3 cursor-pointer">
-      <img src="/static/images/close.svg" alt="закрыть" />
-    </div>
-  </div>
+    <!-- modal windows -->
+    <div
+      id="modal-bg"
+      class="hidden fixed z-10 left-0 top-0 w-[100%] h-[100%] overflow-auto bg-[rgba(0,0,0,0.2)] flex flex-col justify-center items-center"
+    >
+      <div
+        id="modal-add-group"
+        class="hidden min-w-[400px] min-h-[250px] bg-white rounded-2xl p-10 relative"
+      >
+        <div class="mb-10 text-3xl font-bold">Добавление группы:</div>
+        <form
+          id="addGroupForm"
+          method="post"
+          action="/api/addGroup"
+          class="flex flex-col justify-between"
+        >
+          <label>
+            Наименование:
+            <input class="border" name="name" type="text" required />
+          </label>
+          <br />
+          <button
+            type="submit"
+            class="border border-[#FCB894] rounded-2xl hover:bg-[#FCB894] py-3 px-10 hover:text-white"
+          >
+            Добавить
+          </button>
+        </form>
+        <div class="close-modal absolute top-3 right-3 cursor-pointer">
+          <img src="/static/images/close.svg" alt="закрыть" />
+        </div>
+      </div>
 
-  <div id="modal-update-group" class="hidden min-w-[400px] min-h-[250px] bg-white rounded-2xl p-10 relative">
-    <div class="mb-10 text-3xl font-bold">
-      Изменение группы:
-    </div>
-    <form id="updateGroupForm" method="post" action="/api/addGroup" class="flex flex-col justify-between">
-      <label>
-        Наименование:
-        <input class="border" name="name" type="text" required>
-      </label>
-      <input type="hidden" name="id" value="">
-      <br>
-      <button type="submit" class="border border-[#FCB894] rounded-2xl hover:bg-[#FCB894] py-3 px-10 hover:text-white">
-        Изменить
-      </button>
-    </form>
-    <div class="close-modal absolute top-3 right-3 cursor-pointer">
-      <img src="/static/images/close.svg" alt="закрыть" />
-    </div>
-  </div>
+      <div
+        id="modal-update-group"
+        class="hidden min-w-[400px] min-h-[250px] bg-white rounded-2xl p-10 relative"
+      >
+        <div class="mb-10 text-3xl font-bold">Изменение группы:</div>
+        <form
+          id="updateGroupForm"
+          method="post"
+          action="/api/addGroup"
+          class="flex flex-col justify-between"
+        >
+          <label>
+            Наименование:
+            <input class="border" name="name" type="text" required />
+          </label>
+          <input type="hidden" name="id" value="" />
+          <br />
+          <button
+            type="submit"
+            class="border border-[#FCB894] rounded-2xl hover:bg-[#FCB894] py-3 px-10 hover:text-white"
+          >
+            Изменить
+          </button>
+        </form>
+        <div class="close-modal absolute top-3 right-3 cursor-pointer">
+          <img src="/static/images/close.svg" alt="закрыть" />
+        </div>
+      </div>
 
-  <div id="modal-delete-group" class="hidden min-w-[400px] min-h-[250px] bg-white rounded-2xl p-10 relative">
-    <div class="mb-10 text-3xl font-bold">
-      Удаление группы:
-    </div>
-    <form id="deleteGroupForm" method="post" class="flex flex-col justify-between">
-      <br>
-      <input type="hidden" name="id" value="">
-      <button type="submit" class="border border-red-500 rounded-2xl hover:bg-red-500 py-3 px-10 hover:text-white">
-        Удалить
-      </button>
-      <br>
-      <button type="submit" class="border border-[#FCB894] rounded-2xl hover:bg-[#FCB894] py-3 px-10 hover:text-white">
-        Отмена
-      </button>
-    </form>
-    <div class="close-modal absolute top-3 right-3 cursor-pointer">
-      <img src="/static/images/close.svg" alt="закрыть" />
-    </div>
-  </div>
+      <div
+        id="modal-delete-group"
+        class="hidden min-w-[400px] min-h-[250px] bg-white rounded-2xl p-10 relative"
+      >
+        <div class="mb-10 text-3xl font-bold">Удаление группы:</div>
+        <form
+          id="deleteGroupForm"
+          method="post"
+          class="flex flex-col justify-between"
+        >
+          <br />
+          <input type="hidden" name="id" value="" />
+          <button
+            type="submit"
+            class="border border-red-500 rounded-2xl hover:bg-red-500 py-3 px-10 hover:text-white"
+          >
+            Удалить
+          </button>
+          <br />
+          <button
+            type="submit"
+            class="border border-[#FCB894] rounded-2xl hover:bg-[#FCB894] py-3 px-10 hover:text-white"
+          >
+            Отмена
+          </button>
+        </form>
+        <div class="close-modal absolute top-3 right-3 cursor-pointer">
+          <img src="/static/images/close.svg" alt="закрыть" />
+        </div>
+      </div>
 
-  <div id="modal-add-student" class="hidden min-w-[400px] min-h-[250px] bg-white rounded-2xl p-10 relative">
-    <div class="mb-10 text-3xl font-bold">
-      Добавление студента:
+      <div
+        id="modal-add-student"
+        class="hidden min-w-[400px] min-h-[250px] bg-white rounded-2xl p-10 relative"
+      >
+        <div class="mb-10 text-3xl font-bold">Добавление студента:</div>
+        <form
+          id="addStudentForm"
+          method="post"
+          class="flex flex-col justify-between"
+        >
+          <label>
+            Имя:
+            <input class="border" name="firstname" type="text" required />
+          </label>
+          <br />
+          <label>
+            Фамилия:
+            <input class="border" name="lastname" type="text" required />
+          </label>
+          <br />
+          <label>
+            Отчество:
+            <input class="border" name="secondname" type="text" />
+          </label>
+          <br />
+          <label>
+            Логин:
+            <input class="border" name="login" type="text" required />
+          </label>
+          <br />
+          <label>
+            Пароль:
+            <input class="border" name="password" type="password" required />
+          </label>
+          <input type="hidden" name="group_id" value="" />
+          <br />
+          <button
+            type="submit"
+            class="border border-[#FCB894] rounded-2xl hover:bg-[#FCB894] py-3 px-10 hover:text-white"
+          >
+            Добавить
+          </button>
+        </form>
+        <div class="close-modal absolute top-3 right-3 cursor-pointer">
+          <img src="/static/images/close.svg" alt="закрыть" />
+        </div>
+      </div>
     </div>
-    <form id="addStudentForm" method="post" class="flex flex-col justify-between">
-      <label>
-        Имя:
-        <input class="border" name="firstname" type="text" required>
-      </label>
-      <br>
-      <label>
-        Фамилия:
-        <input class="border" name="lastname" type="text" required>
-      </label>
-      <br>
-      <label>
-        Отчество:
-        <input class="border" name="secondname" type="text">
-      </label>
-      <br>
-      <label>
-        Логин:
-        <input class="border" name="login" type="text" required>
-      </label>
-      <br>
-      <label>
-        Пароль:
-        <input class="border" name="password" type="password" required>
-      </label>
-      <input type="hidden" name="group_id" value="">
-      <br>
-      <button type="submit" class="border border-[#FCB894] rounded-2xl hover:bg-[#FCB894] py-3 px-10 hover:text-white">
-        Добавить
-      </button>
-    </form>
-    <div class="close-modal absolute top-3 right-3 cursor-pointer">
-      <img src="/static/images/close.svg" alt="закрыть" />
-    </div>
-  </div>
-
-</div>
-</body>
+  </body>
 </html>
 <script>
   let selectedGroup;
   let groups;
   let students;
 
-  const closeModal = () => {
-    const click_event = new CustomEvent('click');
-    Array.from(document.getElementsByClassName("close-modal"))[0].dispatchEvent(click_event);
-  }
+  const click = (element) => {
+    console.log("click on ", element);
+    const click_event = new CustomEvent("click");
+    element.dispatchEvent(click_event);
+  };
 
-  const formToJSON = (elements) => [].reduce.call(
-    elements,
-    (data, element) => {
-      element.name ? (data[element.name] = element.value) : {};
-      return data;
-    },
-    {}
-  );
+  const formToJSON = (elements) =>
+    [].reduce.call(
+      elements,
+      (data, element) => {
+        element.name ? (data[element.name] = element.value) : {};
+        return data;
+      },
+      {}
+    );
 
   const handleFormSubmit = (event, method, url) => {
     event.preventDefault();
     const data = formToJSON(event.target.elements);
-    console.log('send data',data);
+    console.log("send data", data);
     const jdata = JSON.stringify(data);
     (async () => {
       const rawResponse = await fetch(url, {
         method: method,
         headers: {
           Accept: "application/json",
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: jdata
+        body: jdata,
       });
       const content = await rawResponse.json();
-      console.log('content',content);
-      getStudents();
-      getGroups();
-      generateStudentList(students.filter((student) => student.group_id == selectedGroup));
-      closeModal()
+      console.log("content", content);
+      getGroups().then(() =>
+        getStudents().then(() => {
+          click(Array.from(document.getElementsByClassName("close-modal"))[0]);
+          click(document.getElementById(`group-${selectedGroup}`));
+          generateStudentList(
+            students.filter((student) => student.group_id == selectedGroup)
+          );
+        })
+      );
     })();
   };
 
   const handleChangeGroup = (e) => {
     document.getElementById("modal-bg").classList.remove("hidden");
     switch (e.target.id) {
-      case ("add-group"): {
+      case "add-group": {
         console.log("add-group");
         document.getElementById("modal-add-group").classList.remove("hidden");
         break;
       }
-      case ("update-group"): {
+      case "update-group": {
         console.log("update-group");
-        document.getElementById("modal-update-group").classList.remove("hidden");
-        document.getElementById("updateGroupForm").children["id"].value = selectedGroup;
-        document.getElementById("updateGroupForm").children[0].children["name"].value = groups.find((group) => group.id == selectedGroup).name;
+        document
+          .getElementById("modal-update-group")
+          .classList.remove("hidden");
+        document.getElementById("updateGroupForm").children["id"].value =
+          selectedGroup;
+        document.getElementById("updateGroupForm").children[0].children[
+          "name"
+        ].value = groups.find((group) => group.id == selectedGroup).name;
         break;
       }
-      case ("delete-group"): {
+      case "delete-group": {
         console.log("delete-group");
-        document.getElementById("modal-delete-group").classList.remove("hidden");
-        document.getElementById("deleteGroupForm").children["id"].value = selectedGroup;
+        document
+          .getElementById("modal-delete-group")
+          .classList.remove("hidden");
+        document.getElementById("deleteGroupForm").children["id"].value =
+          selectedGroup;
         break;
       }
     }
@@ -206,18 +289,19 @@
   const handleChangeStudent = (e) => {
     document.getElementById("modal-bg").classList.remove("hidden");
     switch (e.target.id) {
-      case ("add-student"): {
+      case "add-student": {
         console.log("add-student");
         document.getElementById("modal-add-student").classList.remove("hidden");
-        document.getElementById("addStudentForm").children["group_id"].value = selectedGroup;
+        document.getElementById("addStudentForm").children["group_id"].value =
+          selectedGroup;
         break;
       }
-      case ("update-student"): {
+      case "update-student": {
         console.log("update-student");
         // document.getElementById("modal-update-group").classList.remove("hidden");
         break;
       }
-      case ("delete-student"): {
+      case "delete-student": {
         console.log("delete-student");
         // document.getElementById("modal-delete-group").classList.remove("hidden");
         break;
@@ -226,27 +310,50 @@
   };
 
   // клики по кнопкам (добавить/изменить/удалить) групп
-  document.getElementById("add-group").addEventListener("click", handleChangeGroup);
-  document.getElementById("update-group").addEventListener("click", handleChangeGroup);
-  document.getElementById("delete-group").addEventListener("click", handleChangeGroup);
-
+  document
+    .getElementById("add-group")
+    .addEventListener("click", handleChangeGroup);
+  document
+    .getElementById("update-group")
+    .addEventListener("click", handleChangeGroup);
+  document
+    .getElementById("delete-group")
+    .addEventListener("click", handleChangeGroup);
 
   // клики по кнопкам (добавить/изменить/удалить) студента
   // document.getElementById("add-student").addEventListener("click", handleChangeStudent);
-  document.getElementById("add-student").addEventListener("click", handleChangeStudent);
-  document.getElementById("update-student").addEventListener("click", handleChangeStudent);
-  document.getElementById("delete-student").addEventListener("click", handleChangeStudent);
+  document
+    .getElementById("add-student")
+    .addEventListener("click", handleChangeStudent);
+  document
+    .getElementById("update-student")
+    .addEventListener("click", handleChangeStudent);
+  document
+    .getElementById("delete-student")
+    .addEventListener("click", handleChangeStudent);
 
   const urlStudents = "/api/students";
   const urlGroups = "/api/groups";
 
   // сабмит формы (добавить/изменит/удалить) групп
-  document.getElementById("addGroupForm").addEventListener("submit", (e) => handleFormSubmit(e, "post", urlGroups));
-  document.getElementById("updateGroupForm").addEventListener("submit", (e) => handleFormSubmit(e, "put", urlGroups));
-  document.getElementById("deleteGroupForm").addEventListener("submit", (e) => handleFormSubmit(e, "delete", urlGroups));
+  document
+    .getElementById("addGroupForm")
+    .addEventListener("submit", (e) => handleFormSubmit(e, "post", urlGroups));
+  document
+    .getElementById("updateGroupForm")
+    .addEventListener("submit", (e) => handleFormSubmit(e, "put", urlGroups));
+  document
+    .getElementById("deleteGroupForm")
+    .addEventListener("submit", (e) =>
+      handleFormSubmit(e, "delete", urlGroups)
+    );
 
   // сабмит формы (добавить/изменит/удалить) студентов
-  document.getElementById("addStudentForm").addEventListener("submit", (e) => handleFormSubmit(e, "post", urlStudents));
+  document
+    .getElementById("addStudentForm")
+    .addEventListener("submit", (e) =>
+      handleFormSubmit(e, "post", urlStudents)
+    );
   // document.getElementById("updateStudentForm").addEventListener("submit", (e) => handleFormSubmit(e, "put",urlStudents));
   // document.getElementById("deleteStudentForm").addEventListener("submit", (e) => handleFormSubmit(e, "delete",urlStudents));
 
@@ -255,6 +362,9 @@
       document.getElementById("modal-add-group").classList.add("hidden");
       document.getElementById("modal-update-group").classList.add("hidden");
       document.getElementById("modal-delete-group").classList.add("hidden");
+      document.getElementById("modal-add-student").classList.add("hidden");
+      // document.getElementById("modal-update-student").classList.add("hidden");
+      // document.getElementById("modal-delete-student").classList.add("hidden");
       document.getElementById("modal-bg").classList.add("hidden");
     });
   });
@@ -265,7 +375,17 @@
     data.map((group) => {
       const groupEl = document.createElement("div");
       groupEl.id = `group-${group.id}`;
-      groupEl.classList.add("group", "py-[20px]", "w-full", "cursor-pointer", "rounded-2xl", "flex", "justify-center", "items-center", "mx-[20px]");
+      groupEl.classList.add(
+        "group",
+        "py-[20px]",
+        "w-full",
+        "cursor-pointer",
+        "rounded-2xl",
+        "flex",
+        "justify-center",
+        "items-center",
+        "mx-[20px]"
+      );
       groupEl.innerHTML = `
                 <div class = "px-4">${group.name}</div>
             `;
@@ -283,9 +403,10 @@
     `;
     list.innerHTML = `${headers}`;
     students.forEach((student, index) => {
-      list.innerHTML +=
-        `
-      <div class = "col-span-1 border flex justify-center items-center py-3">${index + 1}</div>
+      list.innerHTML += `
+      <div class = "col-span-1 border flex justify-center items-center py-3">${
+        index + 1
+      }</div>
       <div class = "col-span-4 border p-3">${student.lastname}</div>
       <div class = "col-span-3 border p-3">${student.firstname}</div>
       <div class = "col-span-4 border p-3">${student.secondname}</div>
@@ -294,7 +415,9 @@
   };
 
   const handleGroupClick = (event) => {
-    const id = event.target.id ? event.target.id.split("-")[1] : event.path[1].id.split("-")[1];
+    const id = event.target.id
+      ? event.target.id.split("-")[1]
+      : event.path[1].id.split("-")[1];
     const groups = document.getElementsByClassName("group");
     if (id) {
       selectedGroup = id;
@@ -302,19 +425,17 @@
         el.classList.remove("shadow-md", "text-white", "bg-[#2E9ECB]");
       });
       document.getElementById(`group-${id}`).classList.add("shadow-md");
-      getStudents();
-      generateStudentList(students.filter((student) => student.group_id == id));
+      getStudents().then(()=>generateStudentList(students.filter((student) => student.group_id == id)));
     }
   };
 
-  const getGroups = () => {
+  const getGroups = async () => {
     fetch("/api/groups")
       .then((res) => res.json())
       .then((res) => {
         console.table(res);
         groups = res;
         generateGroupsRow(res);
-        selectedGroup = res[0].id;
         const groupsEl = document.getElementsByClassName("group");
         Array.from(groupsEl).forEach((el) => {
           el.addEventListener("click", handleGroupClick);
@@ -322,11 +443,10 @@
       });
   };
 
-  const getStudents = () => {
+  const getStudents = async () => {
     fetch("/api/students")
       .then((res) => res.json())
       .then((res) => {
-        console.table(res);
         students = res;
         // generateStudentList(res);
       });
@@ -334,5 +454,4 @@
 
   getGroups();
   getStudents();
-
 </script>

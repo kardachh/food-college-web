@@ -1,5 +1,5 @@
 const express = require("express");
-const { getGroups, getStudents, addGroup, updateGroup, removeGroup, addStudent } = require("./database");
+const { getGroups, getStudents, addGroup, updateGroup, removeGroup, addStudent, getStudentMarks, getStudentInfo } = require("./database");
 const apiRouter = express.Router();
 
 apiRouter.use((req, res, next) => {
@@ -54,6 +54,14 @@ apiRouter.delete("/groups", async (req, res) => {
     res.json(data);
   }
   else res.json({msg:'empty query',query:req.query,body:req.body})
+});
+
+apiRouter.get("/getStudentMarks", async (req, res) => {
+  req.session.authenticated ? res.json(await getStudentMarks(req.query.id)) : res.redirect("/authorization");
+});
+
+  apiRouter.get("/getStudentInfo", async (req, res) => {
+  req.session.authenticated ? res.json(await getStudentInfo(req.session.user.id)) : res.redirect("/authorization");
 });
 
 apiRouter.get("/students", async (req, res) => {

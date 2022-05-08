@@ -480,12 +480,12 @@ Ensure the default browser behavior of the `hidden` attribute.
   position: relative;
 }
 
-.left-0 {
-  left: 0px;
-}
-
 .top-0 {
   top: 0px;
+}
+
+.left-0 {
+  left: 0px;
 }
 
 .top-3 {
