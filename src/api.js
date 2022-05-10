@@ -2,6 +2,8 @@ const express = require("express");
 const { getGroups, getStudents, addGroup, updateGroup, removeGroup, addStudent, getStudentMarks, getStudentInfo } = require("./database");
 const apiRouter = express.Router();
 
+apiRouter.use(require('express-status-monitor')())
+
 apiRouter.use((req, res, next) => {
   // req.session.authenticated ? next() : res.redirect("/authorization");
   next();

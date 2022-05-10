@@ -3,6 +3,8 @@ const express = require("express");
 const { apiRouter } = require("./api");
 const router = express.Router();
 
+router.use(require('express-status-monitor')())
+
 router.use((req, res, next) => {
   console.log(req.method,req.path);
   next();

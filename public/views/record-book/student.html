@@ -13,19 +13,191 @@
     crossorigin="anonymous"
   ></script>
 </head>
-<body class="m-10">
-<div class="text-3xl">Зачетная книжка</div>
-<div class="my-5 flex">
-  <img src="/static/images/placeholder_photo.png" class="w-[170px] mr-5">
-  <div class="flex flex-col">
-    <div id = "fio" class="text-3xl font-[400] mb-4"></div>
-    <div id = "codename"></div>
-    <div id = "structure"></div>
-    <div id = "order"></div>
+<body>
+<div class="relative">
+  <div class="relative left-[135px] m-10 w-[85%]">
+    <div class="text-[32px]">Зачетная книжка</div>
+    <div class="my-5 flex">
+      <img src="/static/images/placeholder_photo.png" class="w-[170px] mr-5">
+      <div class="flex flex-col">
+        <div id="fio" class="text-[24px] font-[400] mb-4"></div>
+        <div id="codename"></div>
+        <div id="structure"></div>
+        <div id="order"></div>
+      </div>
+    </div>
+    <div id="semesterRow" class="py-6 flex overflow-x-auto"></div>
+    <div id="marks" class="mt-10  rounded-2xl overflow-hidden grid grid-cols-12 shadow-2xl mb-[70px]"></div>
   </div>
+  <div id="footer" class="bg-[#FCB894] w-[100%] text-white py-[50px] pl-[175px]">
+    <div class="flex flex-col w-fit">
+      <div class="text-3xl mb-10">Кировский технологический колледж пищевой промышленности</div>
+      <div class="flex justify-between">
+        <div>
+          <div class="font-bold">Режим работы</div>
+          <div>
+            Понедельник - четверг: с 8.00 до 16.30
+          </div>
+          <div>
+            Пятница: с 8.00 до 15.30
+          </div>
+          <div>
+            Суббота, воскресенье - выходной
+          </div>
+          <br>
+          <br>
+          <div>
+            Адрес: 610017 г.Киров, Октябрьский пр., 82
+            <br>
+            <br>
+            Сайт: www.kpp.kirov.ru
+            <br>
+            <br>
+            Электронная почта: kpp.kirov@mail.ru
+            <br>
+            <br>
+            Директор: Печенкина Светлана Сергеевна
+          </div>
+        </div>
+        <div>
+          <span class="font-bold">Телефоны:</span>
+          <br>
+          Директор	(8332) 54-86-46
+          <br>
+
+          Учебная часть	(8332) 67-53-18
+          <br>
+
+          Учебная часть ул. Попова, д.3	(8332) 51-02-56
+          <br>
+          Приёмная
+          <br>
+          комиссия	(8332) 67-51-89
+          <br>
+          Учительская	(8332) 54-90-30
+          <br>
+          Столовая	(8332) 54-90-29
+          <br>
+          Бухгалтерия	(8332) 64-06-40
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="left-menu"
+     class="fixed z-50 bg-white top-0 left-0 min-w-[135px] min-h-[600px] shadow-xl rounded-r-2xl flex flex-col justify-around items-center">
+  <a href="/">
+    <img src="/static/images/user.svg" alt="user">
+  </a>
+  <a href="/">
+    <img src="/static/images/home.svg" alt="user">
+  </a>
+  <a href="/">
+    <img src="/static/images/list.svg" alt="user">
+  </a>
+  <a href="/record-book">
+    <img src="/static/images/book.svg" alt="user">
+  </a>
+  <a href="/">
+    <img src="/static/images/phone-call.svg" alt="user">
+  </a>
+  <a href="/">
+    <img src="/static/images/info.svg" alt="user">
+  </a>
+  <a href="/">
+    <img src="/static/images/hide.svg" alt="user">
+  </a>
 </div>
 </body>
 </html>
 <script>
+  let studentInfo;
+  let studentMarks;
+  let selectedSemester;
+
+  const generateMarksList = (marks) => {
+    const list = document.getElementById("marks");
+    const headers = `
+      <div class = "col-span-1 border flex justify-center items-center py-3 font-bold rounded-tl-2xl">№</div>
+      <div class = "col-span-2 border flex justify-center items-center py-3 font-bold">Наименование</div>
+      <div class = "col-span-2 border flex justify-center items-center py-3 font-bold">Общее кол-во час/ед</div>
+      <div class = "col-span-1 border flex justify-center items-center py-3 font-bold">Тип</div>
+      <div class = "col-span-2 border flex justify-center items-center py-3 font-bold">Дата сдачи</div>
+      <div class = "col-span-3 border flex justify-center items-center py-3 font-bold">Преподаватель</div>
+      <div class = "col-span-1 border flex justify-center items-center py-3 font-bold rounded-tr-2xl">Итог</div>
+    `;
+    list.innerHTML = `${headers}`;
+    marks.forEach((mark, index) => {
+      list.innerHTML += `
+      <div class = "col-span-1 border flex justify-center items-center py-3">${
+        index + 1
+      }</div>
+      <div class = "col-span-2 border p-3">${mark.name}</div>
+      <div class = "col-span-2 border p-3">${mark.hours_passed} из ${mark.hours_all}</div>
+      <div class = "col-span-1 border p-3">${mark.type}</div>
+      <div class = "col-span-2 border p-3">Дата сдачи</div>
+      <div class = "col-span-3 border p-3">Преподаватель</div>
+      <div class = "col-span-1 border p-3">${mark.value}</div>
+    `;
+    });
+  };
+
+  const groupBy = function(xs, key) {
+    return xs.reduce(function(rv, x) {
+      (rv[x[key]] = rv[x[key]] || []).push(x);
+      return rv;
+    }, {});
+  };
+
+  const setData = () => {
+    console.log(studentInfo, studentMarks);
+
+    document.getElementById("fio").innerHTML = `${studentInfo.lastname} ${studentInfo.firstname} ${studentInfo.secondname}`;
+    document.getElementById("codename").innerHTML = `Специальность: ${studentInfo.code} ${studentInfo.speciality_name}`;
+    if (studentMarks.length !== 0) {
+      createSemesterRow();
+      selectSemester(Object.keys(groupBy(studentMarks, "semester"))[0]);
+    }
+  };
+
+  const selectSemester = (id) => {
+    selectedSemester = id;
+    Array.from(document.getElementsByClassName("semester")).forEach(el => {
+      el.classList.remove("shadow");
+    });
+    document.getElementById(`semester-${id}`).classList.add("shadow");
+    generateMarksList(groupBy(studentMarks, "semester")[selectedSemester]);
+  };
+
+  const createSemesterRow = () => {
+    const semesters = Object.keys(groupBy(studentMarks, "semester")).map(semester =>
+      `<div id = "semester-${semester}" class = "semester py-[20px] mx-[20px] px-10  cursor-pointer rounded-2xl flex justify-center items-center font-[600]">
+        ${semester}-й семестр
+      </div>`
+    );
+    document.getElementById("semesterRow").innerHTML = `${semesters.join("")}`;
+    Array.from(document.getElementsByClassName("semester")).forEach((el) => el.addEventListener("click", (e) => selectSemester(e.target.id.split("-")[1])));
+  };
+
+  const getStudentInfo = async () => {
+    await fetch("/api/getStudentInfo")
+      .then((res) => res.json())
+      .then((res) => {
+        studentInfo = res;
+      });
+    return studentInfo;
+  };
+
+  const getStudentMarks = async (student_id) => {
+    await fetch("/api/getStudentMarks?" + new URLSearchParams({ id: student_id }))
+      .then((res) => res.json())
+      .then((res) => {
+        studentMarks = res;
+      });
+    return studentInfo;
+  };
+
+  getStudentInfo().then((res) => getStudentMarks(res.student_id)).then(setData);
+
 
 </script>

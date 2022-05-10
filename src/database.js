@@ -203,7 +203,7 @@ module.exports = {
         });
         client.connect();
         return await client
-          .query(`SELECT user_id, student_id, firstname, lastname, secondname, group_id, group_name, code, speciality_name, short_name FROM public.student_info where student_id=${student_id};`)
+          .query(`SELECT id, semester, group_id, group_name, student_id, disciplines_id, "name", "hours passed" as "hours_passed", "hours all" as "hours_all", "type", value FROM public.student_marks where student_id=${student_id};`)
           .then((res) => {
             client.end();
             return res.rows;
@@ -225,7 +225,7 @@ module.exports = {
           .query(`SELECT user_id, student_id, firstname, lastname, secondname, group_id, group_name, code, speciality_name, short_name FROM public.student_info where user_id=${user_id};`)
           .then((res) => {
             client.end();
-            return res.rows;
+            return res.rows[0];
           });
       };
       return await getStudentInfo().then(res => res);

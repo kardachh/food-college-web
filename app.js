@@ -5,6 +5,7 @@ const session = require("express-session");
 const { urlencoded } = require("express");
 
 const app = express();
+app.use(require('express-status-monitor')())
 const port = 3000;
 app.use(express.json());
 app.use(urlencoded({ extended: true }));

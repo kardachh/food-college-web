@@ -1,80 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
-    />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Авторизация</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/output.css" />
-  </head>
-  <body>
-    <div class="absolute flex justify-center items-center h-[100%] w-[100%]">
-      <form
-        id="auth"
-        action="http://localhost:3000/login"
-        class="h-[300px] w-[300px] border border-[#FCB894] rounded-xl flex flex-col items-center justify-around"
-        method="post"
-      >
-        <div class="text-2xl font-bold">Авторизация</div>
-        <div class="flex flex-col items-end">
-          <div>
-            <label>
-              Логин:
-              <input name="login" class="border" type="text" value="1"/>
-            </label>
-          </div>
-          <br />
-          <div>
-            <label>
-              Пароль:
-              <input name="password" class="border" type="password" value="1"/>
-            </label>
-          </div>
-        </div>
-        <button
-          class="border px-10 rounded-xl border border-[#FCB894] hover:bg-[#FCB894] hover:text-white"
-          type="submit"
-        >
-          Войти
-        </button>
-      </form>
-      <script>
-        const formToJSON = (elements) =>
-          [].reduce.call(
-            elements,
-            (data, element) => {
-              element.name ? (data[element.name] = element.value) : {};
-              return data;
-            },
-            {}
-          );
-        const formAuth = document.getElementById("auth");
-        const handleFormSubmit = (event) => {
-          event.preventDefault();
-          const data = formToJSON(formAuth.elements);
-          console.log(data);
-          const jdata = JSON.stringify(data);
-          (async () => {
-            const rawResponse = await fetch("/login", {
-              method: "POST",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-              },
-              body: jdata,
-            });
-            const content = await rawResponse.json();
-            console.log(content);
-            content.msg.authorization
-              ? window.location.replace("/")
-              : alert("Неверный логин или пароль");
-          })();
-        };
-        formAuth.addEventListener("submit", handleFormSubmit);
-      </script>
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+  />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Авторизация</title>
+  <link rel="stylesheet" type="text/css" href="/static/css/output.css" />
+</head>
+<body>
+<div id="left-menu"
+     class="fixed top-0 left-0 min-w-[135px] min-h-[600px] shadow-xl rounded-r-2xl flex flex-col justify-around items-center">
+  <a href="/">
+    <img src="/static/images/user.svg" alt="user">
+  </a>
+  <a href="/">
+    <img src="/static/images/home.svg" alt="user">
+  </a>
+  <a href="/">
+    <img src="/static/images/list.svg" alt="user">
+  </a>
+  <a href="/record-book">
+    <img src="/static/images/book.svg" alt="user">
+  </a>
+  <a href="/">
+    <img src="/static/images/phone-call.svg" alt="user">
+  </a>
+  <a href="/">
+    <img src="/static/images/info.svg" alt="user">
+  </a>
+  <a href="/">
+    <img src="/static/images/hide.svg" alt="user">
+  </a>
+</div>
+<div class="absolute flex justify-center items-center h-[100%] w-[90%] right-0">
+  <form
+    id="auth"
+    action="http://localhost:3000/login"
+    class="h-[300px] w-[300px] border border-[#FCB894] rounded-xl flex flex-col items-center justify-around"
+    method="post"
+  >
+    <div class="text-2xl font-bold">Авторизация</div>
+    <div class="flex flex-col items-end">
+      <div>
+        <label>
+          Логин:
+          <input name="login" class="border" type="text" value="" />
+        </label>
+      </div>
+      <br />
+      <div>
+        <label>
+          Пароль:
+          <input name="password" class="border" type="password" value="" />
+        </label>
+      </div>
     </div>
-  </body>
+    <button
+      class="border px-10 rounded-xl border border-[#FCB894] hover:bg-[#FCB894] hover:text-white"
+      type="submit"
+    >
+      Войти
+    </button>
+  </form>
+  <script>
+    const formToJSON = (elements) =>
+      [].reduce.call(
+        elements,
+        (data, element) => {
+          element.name ? (data[element.name] = element.value) : {};
+          return data;
+        },
+        {}
+      );
+    const formAuth = document.getElementById("auth");
+    const handleFormSubmit = (event) => {
+      event.preventDefault();
+      const data = formToJSON(formAuth.elements);
+      console.log(data);
+      const jdata = JSON.stringify(data);
+      (async () => {
+        const rawResponse = await fetch("/login", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          },
+          body: jdata
+        });
+        const content = await rawResponse.json();
+        console.log(content);
+        content.msg.authorization
+          ? window.location.replace("/")
+          : alert("Неверный логин или пароль");
+      })();
+    };
+    formAuth.addEventListener("submit", handleFormSubmit);
+  </script>
+</div>
+</body>
 </html>
