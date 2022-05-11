@@ -5,7 +5,7 @@
 -- Dumped from database version 14.1
 -- Dumped by pg_dump version 14.1
 
--- Started on 2022-05-11 15:38:24 +03
+-- Started on 2022-05-11 15:43:57 +03
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -344,8 +344,6 @@ ALTER TABLE public.users ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
 -- Data for Name: available_groups; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.available_groups (id, teacher_id, group_id, disciplines_id) FROM stdin;
-\.
 
 
 --
@@ -354,16 +352,14 @@ COPY public.available_groups (id, teacher_id, group_id, disciplines_id) FROM std
 -- Data for Name: disciplines; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.disciplines (id, name, hours, type) FROM stdin;
-1	Физкультура	36	Зачет
-2	Физика	72	Экзамен
-3	Химия	72	Экзамен
-4	Информатика	72	Экзамен
-5	Английский язык	36	Зачет
-6	Изобразительное искусство	36	Зачет
-8	Экономика	72	Экзамен
-7	Основы предпринимательской деятельности	36	Зачет
-\.
+INSERT INTO public.disciplines OVERRIDING SYSTEM VALUE VALUES (1, 'Физкультура', 36, 'Зачет');
+INSERT INTO public.disciplines OVERRIDING SYSTEM VALUE VALUES (2, 'Физика', 72, 'Экзамен');
+INSERT INTO public.disciplines OVERRIDING SYSTEM VALUE VALUES (3, 'Химия', 72, 'Экзамен');
+INSERT INTO public.disciplines OVERRIDING SYSTEM VALUE VALUES (4, 'Информатика', 72, 'Экзамен');
+INSERT INTO public.disciplines OVERRIDING SYSTEM VALUE VALUES (5, 'Английский язык', 36, 'Зачет');
+INSERT INTO public.disciplines OVERRIDING SYSTEM VALUE VALUES (6, 'Изобразительное искусство', 36, 'Зачет');
+INSERT INTO public.disciplines OVERRIDING SYSTEM VALUE VALUES (8, 'Экономика', 72, 'Экзамен');
+INSERT INTO public.disciplines OVERRIDING SYSTEM VALUE VALUES (7, 'Основы предпринимательской деятельности', 36, 'Зачет');
 
 
 --
@@ -372,10 +368,8 @@ COPY public.disciplines (id, name, hours, type) FROM stdin;
 -- Data for Name: groups; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.groups (id, name, speciality_id) FROM stdin;
-25	ИСП-401	1
-28	Тест1	1
-\.
+INSERT INTO public.groups OVERRIDING SYSTEM VALUE VALUES (25, 'ИСП-401', 1);
+INSERT INTO public.groups OVERRIDING SYSTEM VALUE VALUES (28, 'Тест1', 1);
 
 
 --
@@ -384,16 +378,14 @@ COPY public.groups (id, name, speciality_id) FROM stdin;
 -- Data for Name: marks; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.marks (id, student_id, disciplines_id, value, teacher_id, hours) FROM stdin;
-1	48	1	Зачтено	1	36
-2	48	2	Отлично	1	72
-3	48	3	Отлично	1	72
-4	48	4	Отлично	1	72
-8	48	8	Отлично	1	72
-5	48	5	Зачтено	1	36
-6	48	6	Зачтено	1	36
-7	48	7	Зачтено	1	36
-\.
+INSERT INTO public.marks OVERRIDING SYSTEM VALUE VALUES (1, 48, 1, 'Зачтено', 1, 36);
+INSERT INTO public.marks OVERRIDING SYSTEM VALUE VALUES (2, 48, 2, 'Отлично', 1, 72);
+INSERT INTO public.marks OVERRIDING SYSTEM VALUE VALUES (3, 48, 3, 'Отлично', 1, 72);
+INSERT INTO public.marks OVERRIDING SYSTEM VALUE VALUES (4, 48, 4, 'Отлично', 1, 72);
+INSERT INTO public.marks OVERRIDING SYSTEM VALUE VALUES (8, 48, 8, 'Отлично', 1, 72);
+INSERT INTO public.marks OVERRIDING SYSTEM VALUE VALUES (5, 48, 5, 'Зачтено', 1, 36);
+INSERT INTO public.marks OVERRIDING SYSTEM VALUE VALUES (6, 48, 6, 'Зачтено', 1, 36);
+INSERT INTO public.marks OVERRIDING SYSTEM VALUE VALUES (7, 48, 7, 'Зачтено', 1, 36);
 
 
 --
@@ -402,9 +394,7 @@ COPY public.marks (id, student_id, disciplines_id, value, teacher_id, hours) FRO
 -- Data for Name: specialties; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.specialties (id, code, name, short_name) FROM stdin;
-1	09.02.07	Информационные системы и программирование	ИСП
-\.
+INSERT INTO public.specialties OVERRIDING SYSTEM VALUE VALUES (1, '09.02.07', 'Информационные системы и программирование', 'ИСП');
 
 
 --
@@ -413,10 +403,8 @@ COPY public.specialties (id, code, name, short_name) FROM stdin;
 -- Data for Name: students; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.students (id, user_id, group_id) FROM stdin;
-48	73	25
-49	74	25
-\.
+INSERT INTO public.students OVERRIDING SYSTEM VALUE VALUES (48, 73, 25);
+INSERT INTO public.students OVERRIDING SYSTEM VALUE VALUES (49, 74, 25);
 
 
 --
@@ -425,16 +413,14 @@ COPY public.students (id, user_id, group_id) FROM stdin;
 -- Data for Name: study_plan; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.study_plan (id, group_id, disciplines_id, semester) FROM stdin;
-1	25	1	1
-3	25	3	1
-4	25	4	1
-2	25	2	1
-5	25	5	2
-6	25	6	2
-7	25	7	2
-8	25	8	2
-\.
+INSERT INTO public.study_plan OVERRIDING SYSTEM VALUE VALUES (1, 25, 1, 1);
+INSERT INTO public.study_plan OVERRIDING SYSTEM VALUE VALUES (3, 25, 3, 1);
+INSERT INTO public.study_plan OVERRIDING SYSTEM VALUE VALUES (4, 25, 4, 1);
+INSERT INTO public.study_plan OVERRIDING SYSTEM VALUE VALUES (2, 25, 2, 1);
+INSERT INTO public.study_plan OVERRIDING SYSTEM VALUE VALUES (5, 25, 5, 2);
+INSERT INTO public.study_plan OVERRIDING SYSTEM VALUE VALUES (6, 25, 6, 2);
+INSERT INTO public.study_plan OVERRIDING SYSTEM VALUE VALUES (7, 25, 7, 2);
+INSERT INTO public.study_plan OVERRIDING SYSTEM VALUE VALUES (8, 25, 8, 2);
 
 
 --
@@ -443,9 +429,7 @@ COPY public.study_plan (id, group_id, disciplines_id, semester) FROM stdin;
 -- Data for Name: teachers; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.teachers (id, user_id) FROM stdin;
-1	75
-\.
+INSERT INTO public.teachers OVERRIDING SYSTEM VALUE VALUES (1, 75);
 
 
 --
@@ -454,12 +438,10 @@ COPY public.teachers (id, user_id) FROM stdin;
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.users (id, firstname, lastname, secondname, role, login, password) FROM stdin;
-75	Рентос	Газович		teacher	3	3
-76	123	123	123	admin	admin	admin
-73	Иван	Иванов	Иванович	student	1	1
-74	Денис	Агапов	Романович	student	2	2
-\.
+INSERT INTO public.users OVERRIDING SYSTEM VALUE VALUES (75, 'Рентос', 'Газович', '', 'teacher', '3', '3');
+INSERT INTO public.users OVERRIDING SYSTEM VALUE VALUES (76, '123', '123', '123', 'admin', 'admin', 'admin');
+INSERT INTO public.users OVERRIDING SYSTEM VALUE VALUES (73, 'Иван', 'Иванов', 'Иванович', 'student', '1', '1');
+INSERT INTO public.users OVERRIDING SYSTEM VALUE VALUES (74, 'Денис', 'Агапов', 'Романович', 'student', '2', '2');
 
 
 --
@@ -750,7 +732,7 @@ ALTER TABLE ONLY public.teachers
     ADD CONSTRAINT teachers_fk FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
--- Completed on 2022-05-11 15:38:24 +03
+-- Completed on 2022-05-11 15:43:57 +03
 
 --
 -- PostgreSQL database dump complete
