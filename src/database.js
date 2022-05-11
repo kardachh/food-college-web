@@ -51,7 +51,7 @@ module.exports = {
           });
           client.connect();
           return await client
-            .query(`INSERT INTO public."groups" ("name") VALUES('${data.name}');`)
+            .query(`INSERT INTO public."groups" ("name","speciality_id") VALUES('${data.name}',${data.speciality_id});`)
             .then(() => {
               client.end();
               return "OK";
