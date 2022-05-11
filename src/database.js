@@ -233,4 +233,36 @@ module.exports = {
       return { type: "error", msg: "Ошибка при вылонении запроса: " + e };
     }
   },
+
+  getDisciplines: async () => {
+    const getDisciplines = async () => {
+      const client = new Client({
+        connectionString
+      });
+      client.connect();
+      return await client
+        .query(`SELECT id, "name", hours, "type" FROM public.disciplines;`)
+        .then((res) => {
+          client.end();
+          return res.rows;
+        });
+    };
+    return await getDisciplines().then(res => res);
+  },
+
+  getUsers: async () => {
+    const getUsers = async () => {
+      const client = new Client({
+        connectionString
+      });
+      client.connect();
+      return await client
+        .query(`SELECT id, firstname, lastname, secondname, "role" FROM public.users;`)
+        .then((res) => {
+          client.end();
+          return res.rows;
+        });
+    };
+    return await getUsers().then(res => res);
+  },
 };

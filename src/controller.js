@@ -24,6 +24,18 @@ router.get("/groups", (req, res) => {
     : res.redirect("/authorization");
 });
 
+router.get("/users", (req, res) => {
+  req.session.authenticated
+    ? req.session.user.role==='admin' ? res.sendFile(path.join(path.resolve(), "/public/views/users/index.html")): res.sendStatus(404)
+    : res.redirect("/authorization");
+});
+
+router.get("/disciplines", (req, res) => {
+  req.session.authenticated
+    ? req.session.user.role==='admin' ? res.sendFile(path.join(path.resolve(), "/public/views/disciplines/index.html")): res.sendStatus(404)
+    : res.redirect("/authorization");
+});
+
 router.get("/record-book", (req, res) => {
   req.session.authenticated
     ? req.session.user.role==='student' ? res.sendFile(path.join(path.resolve(), "/public/views/record-book/student.html")): res.json(req.session.user)
