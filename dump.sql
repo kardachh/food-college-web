@@ -5,7 +5,28 @@
 -- Dumped from database version 14.1
 -- Dumped by pg_dump version 14.1
 
--- Started on 2022-05-11 15:43:57 +03
+-- Started on 2022-05-11 15:48:50 +03
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 3677 (class 1262 OID 17295)
+-- Name: Students; Type: DATABASE; Schema: -; Owner: -
+--
+
+CREATE DATABASE "Students" WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE = 'en_US.UTF-8';
+
+
+\connect "Students"
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -27,7 +48,7 @@ CREATE SCHEMA public;
 
 
 --
--- TOC entry 3677 (class 0 OID 0)
+-- TOC entry 3678 (class 0 OID 0)
 -- Dependencies: 3
 -- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: -
 --
@@ -445,7 +466,7 @@ INSERT INTO public.users OVERRIDING SYSTEM VALUE VALUES (74, 'Денис', 'Аг
 
 
 --
--- TOC entry 3678 (class 0 OID 0)
+-- TOC entry 3679 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: avalible_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
@@ -454,7 +475,7 @@ SELECT pg_catalog.setval('public.avalible_groups_id_seq', 1, false);
 
 
 --
--- TOC entry 3679 (class 0 OID 0)
+-- TOC entry 3680 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: disciplines_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
@@ -463,7 +484,7 @@ SELECT pg_catalog.setval('public.disciplines_id_seq', 8, true);
 
 
 --
--- TOC entry 3680 (class 0 OID 0)
+-- TOC entry 3681 (class 0 OID 0)
 -- Dependencies: 213
 -- Name: groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
@@ -472,7 +493,7 @@ SELECT pg_catalog.setval('public.groups_id_seq', 32, true);
 
 
 --
--- TOC entry 3681 (class 0 OID 0)
+-- TOC entry 3682 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: marks_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
@@ -481,7 +502,7 @@ SELECT pg_catalog.setval('public.marks_id_seq', 8, true);
 
 
 --
--- TOC entry 3682 (class 0 OID 0)
+-- TOC entry 3683 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: specialties_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
@@ -490,7 +511,7 @@ SELECT pg_catalog.setval('public.specialties_id_seq', 1, true);
 
 
 --
--- TOC entry 3683 (class 0 OID 0)
+-- TOC entry 3684 (class 0 OID 0)
 -- Dependencies: 211
 -- Name: students_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
@@ -499,7 +520,7 @@ SELECT pg_catalog.setval('public.students_id_seq', 49, true);
 
 
 --
--- TOC entry 3684 (class 0 OID 0)
+-- TOC entry 3685 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: study_plan_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
@@ -508,7 +529,7 @@ SELECT pg_catalog.setval('public.study_plan_id_seq', 8, true);
 
 
 --
--- TOC entry 3685 (class 0 OID 0)
+-- TOC entry 3686 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: techers_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
@@ -517,7 +538,7 @@ SELECT pg_catalog.setval('public.techers_id_seq', 1, true);
 
 
 --
--- TOC entry 3686 (class 0 OID 0)
+-- TOC entry 3687 (class 0 OID 0)
 -- Dependencies: 209
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
@@ -732,7 +753,7 @@ ALTER TABLE ONLY public.teachers
     ADD CONSTRAINT teachers_fk FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
--- Completed on 2022-05-11 15:43:57 +03
+-- Completed on 2022-05-11 15:48:50 +03
 
 --
 -- PostgreSQL database dump complete
