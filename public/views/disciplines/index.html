@@ -73,7 +73,7 @@
   };
 
   const getDisciplines = async (student_id) => {
-    await fetch("/api/getDisciplines")
+    await fetch("/api/disciplines")
       .then((res) => res.json())
       .then((res) => disciplines = res);
     return disciplines

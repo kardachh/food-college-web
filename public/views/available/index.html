@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Доступ</title>
+  <link rel="stylesheet" type="text/css" href="/static/css/output.css" />
+</head>
+<body>
+<!-- left-menu -->
+<div
+  id="left-menu"
+  class="fixed z-50 bg-white top-0 left-0 min-w-[135px] min-h-[600px] shadow-xl rounded-r-2xl flex flex-col justify-around items-center"
+>
+  <a href="/">
+    <img src="/static/images/user.svg" alt="user" />
+  </a>
+  <a href="/">
+    <img src="/static/images/home.svg" alt="user" />
+  </a>
+  <a href="/">
+    <img src="/static/images/list.svg" alt="user" />
+  </a>
+  <a href="/record-book">
+    <img src="/static/images/book.svg" alt="user" />
+  </a>
+  <a href="/">
+    <img src="/static/images/phone-call.svg" alt="user" />
+  </a>
+  <a href="/">
+    <img src="/static/images/info.svg" alt="user" />
+  </a>
+  <a href="/">
+    <img src="/static/images/hide.svg" alt="user" />
+  </a>
+</div>
+
+<div class="relative left-[135px] m-10 w-[70%]">
+  <div class="text-[32px]">Доступность групп для преподавателей</div>
+  <div class="flex justify-around m-10">
+    <div class="w-[350px]">
+      <select
+        id="select-group"
+        onchange="onChangeSelectGroup(this);"
+        class="form-select appearance-none w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+      ></select>
+    </div>
+    <div class="w-[350px]">
+      <select
+        id="select-teacher"
+        onchange="onChangeSelectTeacher(this);"
+        class="form-select appearance-none w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+      ></select>
+    </div>
+  </div>
+  <div id="discipline-grid" class="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cold-3"></div>
+</div>
+
+</body>
+</html>
+<script>
+  let teachers;
+  let groups;
+  let disciplines;
+  let teachersAvailable;
+
+  let selectedTeacherId;
+  let selectedGroupId;
+
+  const getTeachers = async () => {
+    return await fetch("/api/teachers")
+      .then((res) => res.json())
+      .then((res) => {
+        teachers = res;
+        return res;
+      });
+  };
+
+  const getGroups = async () => {
+    return await fetch("/api/groups")
+      .then((res) => res.json())
+      .then((res) => {
+        groups = res;
+        return res;
+      });
+  };
+
+  const getDisciplines = async () => {
+    return await fetch("/api/disciplines")
+      .then((res) => res.json())
+      .then((res) => {
+        disciplines = res;
+        return res;
+      });
+  };
+
+  const getTeacherAvailable = async () => {
+    await fetch("/api/teacherAvailable")
+      .then((res) => res.json())
+      .then((res) => {
+        teachersAvailable = res;
+      });
+    return teachersAvailable;
+  };
+
+  const addTeacherAvailable = (data) => {
+    console.log("add", data);
+    fetch("/api/teacherAvailable", {
+      method: "post",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        // teachersAvailable = res;
+      });
+    // return teachersAvailable;
+  };
+
+  const removeTeacherAvailable = (data) => {
+    console.log("remove", data);
+    fetch("/api/teacherAvailable",
+      {
+        method: "delete",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+      .then((res) => res.json())
+      .then((res) => {
+        // teachersAvailable = res;
+      });
+    // return teachersAvailable;
+  };
+
+  const fillSelect = () => {
+    document.getElementById("select-group").innerHTML = "<option selected>Выберите группу из списка</option>";
+    groups.map((group) => {
+      document.getElementById("select-group").innerHTML += `<option value="${group.id}">${group.name}</option>`;
+    });
+    document.getElementById("select-teacher").innerHTML = "<option selected>Выберите преподавателя из списка</option>";
+    teachers.map((teacher) => {
+      document.getElementById("select-teacher").innerHTML += `<option value="${teacher.teacher_id}">${teacher.lastname} ${teacher.firstname} ${teacher.secondname}</option>`;
+    });
+  };
+
+  const disciplineClickHandler = async (element) => {
+    element.checked ? addTeacherAvailable({
+      discipline_id: element.getAttribute("name"),
+      group_id: selectedGroupId,
+      teacher_id: selectedTeacherId
+    }) : removeTeacherAvailable({
+      id: teachersAvailable.find(available =>
+        parseInt(available.teacher_id) === parseInt(selectedTeacherId) &&
+        parseInt(available.group_id) === parseInt(selectedGroupId) &&
+        parseInt(available.discipline_id) === parseInt(element.getAttribute("name"))
+      ).available_id
+    });
+    await getTeacherAvailable();
+  };
+
+  const onChangeSelectGroup = (selectGroup) => {
+    checkAvailableChange();
+    selectedGroupId = selectGroup.value;
+  };
+
+  const onChangeSelectTeacher = (selectTeacher) => {
+    selectedTeacherId = selectTeacher.value;
+    checkAvailableChange();
+  };
+
+  const generateDisciplines = () => {
+    if (disciplines) {
+      document.getElementById("discipline-grid").innerHTML = disciplines.map((discipline) => {
+        return `<label class="flex items-center justify-between border p-5 rounded-2xl">${discipline.name}<div class="p-3"><input onchange="disciplineClickHandler(this);" name="${discipline.id}" disabled class="discipline" type="checkbox"/></div></label>`;
+      }).join("");
+    }
+  };
+
+  const setValues = () => {
+    if (teachersAvailable) {
+      Array.from(document.getElementsByClassName("discipline")).forEach((discipline) => teachersAvailable.find(available =>
+        parseInt(available.teacher_id) === parseInt(selectedTeacherId) &&
+        parseInt(available.group_id) === parseInt(selectedGroupId) &&
+        parseInt(available.discipline_id) === parseInt(discipline.getAttribute("name"))
+      ) ? discipline.checked = true : discipline.checked = false);
+    }
+  };
+
+  const checkAvailableChange = () => {
+    if (document.getElementById("select-group").selectedIndex && document.getElementById("select-teacher").selectedIndex) {
+      Array.from(document.getElementsByClassName("discipline")).forEach((el) => {
+        el.disabled = false;
+      });
+      setValues();
+    } else {
+      Array.from(document.getElementsByClassName("discipline")).forEach((el) => {
+        el.checked = false;
+        el.disabled = true;
+      });
+    }
+  };
+
+
+  const getData = async () => {
+    await getGroups();
+    await getTeachers();
+    await getDisciplines();
+    await getTeacherAvailable();
+    await fillSelect();
+    generateDisciplines();
+    console.table(groups);
+    console.table(teachers);
+    console.table(disciplines);
+    console.table(teachersAvailable);
+  };
+
+  getData();
+
+</script>

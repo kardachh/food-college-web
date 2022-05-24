@@ -36,61 +36,8 @@
     ></div>
   </div>
 </div>
-<!--<div id="footer" class="bg-[#FCB894] w-[100%] text-white py-[50px] pl-[175px]">-->
-<!--  <div class="flex flex-col w-fit">-->
-<!--    <div class="text-3xl mb-10">Кировский технологический колледж пищевой промышленности</div>-->
-<!--    <div class="flex justify-between">-->
-<!--      <div>-->
-<!--        <div class="font-bold">Режим работы</div>-->
-<!--        <div>-->
-<!--          Понедельник - четверг: с 8.00 до 16.30-->
-<!--        </div>-->
-<!--        <div>-->
-<!--          Пятница: с 8.00 до 15.30-->
-<!--        </div>-->
-<!--        <div>-->
-<!--          Суббота, воскресенье - выходной-->
-<!--        </div>-->
-<!--        <br>-->
-<!--        <br>-->
-<!--        <div>-->
-<!--          Адрес: 610017 г.Киров, Октябрьский пр., 82-->
-<!--          <br>-->
-<!--          <br>-->
-<!--          Сайт: www.kpp.kirov.ru-->
-<!--          <br>-->
-<!--          <br>-->
-<!--          Электронная почта: kpp.kirov@mail.ru-->
-<!--          <br>-->
-<!--          <br>-->
-<!--          Директор: Печенкина Светлана Сергеевна-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div>-->
-<!--        <span class="font-bold">Телефоны:</span>-->
-<!--        <br>-->
-<!--        Директор (8332) 54-86-46-->
-<!--        <br>-->
 
-<!--        Учебная часть (8332) 67-53-18-->
-<!--        <br>-->
-
-<!--        Учебная часть ул. Попова, д.3 (8332) 51-02-56-->
-<!--        <br>-->
-<!--        Приёмная-->
-<!--        <br>-->
-<!--        комиссия (8332) 67-51-89-->
-<!--        <br>-->
-<!--        Учительская (8332) 54-90-30-->
-<!--        <br>-->
-<!--        Столовая (8332) 54-90-29-->
-<!--        <br>-->
-<!--        Бухгалтерия (8332) 64-06-40-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
-
+<!-- left-menu -->
 <div
   id="left-menu"
   class="fixed z-50 bg-white top-0 left-0 min-w-[135px] min-h-[600px] shadow-xl rounded-r-2xl flex flex-col justify-around items-center"
@@ -243,7 +190,7 @@
   };
 
   const getTeacherAvailable = async () => {
-    await fetch("/api/getTeacherAvailable")
+    await fetch("/api/teacherAvailable")
       .then((res) => res.json())
       .then((res) => {
         teacherAvailable = res;

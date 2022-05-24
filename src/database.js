@@ -49,14 +49,72 @@ module.exports = {
           connectionString
         });
         client.connect();
+        const query = user_id ? `SELECT * from "available_disciplines" where user_id=${user_id}` : `SELECT * from "available_disciplines"`;
         return await client
-          .query(`SELECT * from "available_disciplines" where user_id=${user_id}`)
+          .query(query)
           .then((res) => {
             client.end();
             return res.rows;
           });
       };
       return await getTeacherAvailable().then(res => res);
+    } catch (e) {
+      return { type: "error", msg: "Ошибка при вылонении запроса: " + e };
+    }
+  },
+
+  addTeacherAvailable: async (data) => {
+    try {
+      console.log("add",data)
+      if (data) {
+        const addTeacherAvailable = async () => {
+          const client = new Client({
+            connectionString
+          });
+          client.connect();
+          const query = `INSERT INTO available_groups (teacher_id, group_id, disciplines_id) values (${data.teacher_id},${data.group_id},${data.discipline_id});`
+          console.log(query)
+          return await client
+            .query(query)
+            .then(() => {
+              client.end();
+              return "OK";
+            })
+            .catch((e) => {
+              console.error("Ошибка при доступе", e);
+            });
+        };
+        return await addTeacherAvailable().then(res => res);
+      } else {
+        console.log(data);
+        return { type: "error", msg: "Пустые поля" };
+      }
+    } catch (e) {
+      return { type: "error", msg: "Ошибка при вылонении запроса: " + e };
+    }
+  },
+
+  removeTeacherAvailable: async (data) => {
+    try {
+      console.log("remove",data)
+      if (data) {
+        const removeTeacherAvailable = async () => {
+          const client = new Client({
+            connectionString
+          });
+          client.connect();
+          return await client
+            .query(`DELETE FROM available_groups WHERE id=${data.id};`)
+            .then(() => {
+              client.end();
+              return "OK";
+            });
+        };
+        return await removeTeacherAvailable().then(res => res);
+      } else {
+        console.log(data);
+        return { type: "error", msg: "Пустые поля" };
+      }
     } catch (e) {
       return { type: "error", msg: "Ошибка при вылонении запроса: " + e };
     }
@@ -91,7 +149,7 @@ module.exports = {
           });
           client.connect();
           return await client
-            .query(`INSERT INTO public."groups" ("name","speciality_id") VALUES('${data.name}',${data.speciality_id});`)
+            .query(`INSERT INTO "groups" ("name","speciality_id") VALUES('${data.name}',${data.speciality_id});`)
             .then(() => {
               client.end();
               return "OK";
@@ -118,7 +176,7 @@ module.exports = {
         });
         client.connect();
         return await client
-          .query(`UPDATE public."groups" SET "name"='${data.name}' WHERE id=${data.id};`)
+          .query(`UPDATE "groups" SET "name"='${data.name}' WHERE id=${data.id};`)
           .then(() => {
             client.end();
             return "OK";
@@ -139,7 +197,7 @@ module.exports = {
           });
           client.connect();
           return await client
-            .query(`DELETE FROM public."groups" WHERE id=${data.id};`)
+            .query(`DELETE FROM "groups" WHERE id=${data.id};`)
             .then(() => {
               client.end();
               return "OK";
@@ -316,15 +374,14 @@ module.exports = {
     } catch (e) {
       return { type: "error", msg: "Ошибка при вылонении запроса: " + e };
     }
-  },
-  addMark: async (student_id, disciplines_id, value, teacher_id, hours) => {
+  }, addMark: async (student_id, disciplines_id, value, teacher_id, hours) => {
     try {
       const addMark = async () => {
         const client = new Client({
           connectionString
         });
         client.connect();
-        const query = `INSERT INTO public.marks (student_id, disciplines_id, value, teacher_id, hours) VALUES(${student_id}, ${disciplines_id}, '${value}', ${teacher_id}, ${hours}) RETURNING *;`
+        const query = `INSERT INTO public.marks (student_id, disciplines_id, value, teacher_id, hours) VALUES(${student_id}, ${disciplines_id}, '${value}', ${teacher_id}, ${hours}) RETURNING *;`;
         return await client
           .query(query)
           .then((res) => {
@@ -338,14 +395,14 @@ module.exports = {
     }
   },
 
-  changeMark: async (value,mark_id) => {
+  changeMark: async (value, mark_id) => {
     try {
       const changeMark = async () => {
         const client = new Client({
           connectionString
         });
         client.connect();
-        const query = `UPDATE public.marks SET value='${value}'  WHERE id=${mark_id};`
+        const query = `UPDATE public.marks SET value='${value}'  WHERE id=${mark_id};`;
         return await client
           .query(query)
           .then((res) => {
@@ -355,6 +412,26 @@ module.exports = {
       };
       return await changeMark().then(res => res);
 
+    } catch (e) {
+      return { type: "error", msg: "Ошибка при вылонении запроса: " + e };
+    }
+  },
+
+  getTeachers: async () => {
+    try {
+      const getTeachers = async () => {
+        const client = new Client({
+          connectionString
+        });
+        client.connect();
+        return await client
+          .query(`select t.id as "teacher_id",t.user_id,u.firstname ,u.lastname ,u.secondname from teachers t join users u on t.user_id = u.id`)
+          .then((res) => {
+            client.end();
+            return res.rows;
+          });
+      };
+      return await getTeachers().then(res => res);
     } catch (e) {
       return { type: "error", msg: "Ошибка при вылонении запроса: " + e };
     }

@@ -13,7 +13,10 @@ const {
   getTeacherAvailable,
   getGroupMarks,
   changeMark,
-  addMark
+  addMark,
+  getTeachers,
+  addTeacherAvailable,
+  removeTeacherAvailable
 } = require("./database");
 const apiRouter = express.Router();
 
@@ -35,12 +38,30 @@ apiRouter.get("/getUserData", (req, res) => {
   req.session.authenticated ? res.json(user) : res.redirect("/authorization");
 });
 
-apiRouter.get("/getTeacherAvailable", async (req, res) => {
-  console.log("query", req.query);
-  console.log("body", req.body);
-  const data = await getTeacherAvailable(req.session.user.id);
+apiRouter.get('/teachers', async (req,res)=>{
+  res.json(await getTeachers())
+})
+
+apiRouter.get("/teacherAvailable", async (req, res) => {
+  const data = await getTeacherAvailable(req.session.user.role === 'teacher' ? req.session.user.id :  null);
   // req.session.authenticated ? res.json(data) : res.redirect("/authorization");
   res.json(data);
+});
+
+apiRouter.post("/teacherAvailable", async (req, res) => {
+  console.log("add_body", req.body);
+  const data = await addTeacherAvailable(req.body);
+  // req.session.authenticated ? res.json(data) : res.redirect("/authorization");
+  // res.json(data);
+  res.json(321)
+});
+
+apiRouter.delete("/teacherAvailable", async (req, res) => {
+  console.log("remove_body", req.body);
+  const data = await removeTeacherAvailable(req.body);
+  // req.session.authenticated ? res.json(data) : res.redirect("/authorization");
+  // res.json(data);
+  res.json(123)
 });
 
 apiRouter.get("/groups", async (req, res) => {
@@ -95,7 +116,7 @@ apiRouter.get("/getStudentInfo", async (req, res) => {
   req.session.authenticated ? res.json(await getStudentInfo(req.session.user.id)) : res.redirect("/authorization");
 });
 
-apiRouter.get("/getDisciplines", async (req, res) => {
+apiRouter.get("/disciplines", async (req, res) => {
   req.session.authenticated ? res.json(await getDisciplines()) : res.redirect("/authorization");
 });
 
