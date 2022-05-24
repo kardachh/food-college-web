@@ -42,6 +42,12 @@ router.get("/record-book", (req, res) => {
     : res.redirect("/authorization");
 });
 
+router.get("/journal", (req, res) => {
+  req.session.authenticated
+    ? req.session.user.role==='teacher' ? res.sendFile(path.join(path.resolve(), "/public/views/journal/index.html")): res.sendStatus(404)
+    : res.redirect("/authorization");
+});
+
 router.get("/authorization", (req, res) => {
   req.session.authenticated
     ? res.redirect("/")

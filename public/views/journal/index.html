@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+  />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Зачетная книжка</title>
+  <link rel="stylesheet" type="text/css" href="/static/css/output.css" />
+  <script
+    src="https://code.jquery.com/jquery-3.6.0.js"
+    integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+    crossorigin="anonymous"
+  ></script>
+</head>
+<body class="absolute h-[100%] w-[100%]">
+<div class="relative">
+  <div class="relative left-[135px] m-10 w-[85%]">
+    <div class="text-[32px]">Ведомость</div>
+
+    <div class="flex mt-10">
+      <div class="mb-3 xl:w-96">
+        <select
+          id="select-group-discipline"
+          onchange="if (this.selectedIndex) onChangeSelect(this);"
+          class="form-select appearance-none w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+          aria-label="Default select example"
+        ></select>
+      </div>
+    </div>
+    <div
+      id="marks"
+      class="mt-10 rounded-2xl overflow-hidden grid grid-cols-12 shadow-2xl mb-[70px]"
+    ></div>
+  </div>
+</div>
+<!--<div id="footer" class="bg-[#FCB894] w-[100%] text-white py-[50px] pl-[175px]">-->
+<!--  <div class="flex flex-col w-fit">-->
+<!--    <div class="text-3xl mb-10">Кировский технологический колледж пищевой промышленности</div>-->
+<!--    <div class="flex justify-between">-->
+<!--      <div>-->
+<!--        <div class="font-bold">Режим работы</div>-->
+<!--        <div>-->
+<!--          Понедельник - четверг: с 8.00 до 16.30-->
+<!--        </div>-->
+<!--        <div>-->
+<!--          Пятница: с 8.00 до 15.30-->
+<!--        </div>-->
+<!--        <div>-->
+<!--          Суббота, воскресенье - выходной-->
+<!--        </div>-->
+<!--        <br>-->
+<!--        <br>-->
+<!--        <div>-->
+<!--          Адрес: 610017 г.Киров, Октябрьский пр., 82-->
+<!--          <br>-->
+<!--          <br>-->
+<!--          Сайт: www.kpp.kirov.ru-->
+<!--          <br>-->
+<!--          <br>-->
+<!--          Электронная почта: kpp.kirov@mail.ru-->
+<!--          <br>-->
+<!--          <br>-->
+<!--          Директор: Печенкина Светлана Сергеевна-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div>-->
+<!--        <span class="font-bold">Телефоны:</span>-->
+<!--        <br>-->
+<!--        Директор (8332) 54-86-46-->
+<!--        <br>-->
+
+<!--        Учебная часть (8332) 67-53-18-->
+<!--        <br>-->
+
+<!--        Учебная часть ул. Попова, д.3 (8332) 51-02-56-->
+<!--        <br>-->
+<!--        Приёмная-->
+<!--        <br>-->
+<!--        комиссия (8332) 67-51-89-->
+<!--        <br>-->
+<!--        Учительская (8332) 54-90-30-->
+<!--        <br>-->
+<!--        Столовая (8332) 54-90-29-->
+<!--        <br>-->
+<!--        Бухгалтерия (8332) 64-06-40-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+
+<div
+  id="left-menu"
+  class="fixed z-50 bg-white top-0 left-0 min-w-[135px] min-h-[600px] shadow-xl rounded-r-2xl flex flex-col justify-around items-center"
+>
+  <a href="/">
+    <img src="/static/images/user.svg" alt="user" />
+  </a>
+  <a href="/">
+    <img src="/static/images/home.svg" alt="user" />
+  </a>
+  <a href="/">
+    <img src="/static/images/list.svg" alt="user" />
+  </a>
+  <a href="/record-book">
+    <img src="/static/images/book.svg" alt="user" />
+  </a>
+  <a href="/">
+    <img src="/static/images/phone-call.svg" alt="user" />
+  </a>
+  <a href="/">
+    <img src="/static/images/info.svg" alt="user" />
+  </a>
+  <a href="/">
+    <img src="/static/images/hide.svg" alt="user" />
+  </a>
+</div>
+</body>
+</html>
+
+<script>
+  let marks;
+  let userData;
+  let disciplineId;
+  let teacherAvailable;
+
+  const generateMarksList = (marks) => {
+    console.log(marks);
+    const list = document.getElementById("marks");
+    const headers = `
+      <div class = "col-span-1 border flex justify-center items-center py-3 font-bold rounded-tl-2xl">№</div>
+      <div class = "col-span-6 border flex justify-center items-center py-3 font-bold">ФИО</div>
+      <div class = "col-span-5 border flex justify-center items-center py-3 font-bold rounded-tr-2xl">Оценка</div>
+    `;
+    list.innerHTML = `${headers}`;
+
+    marks.forEach((mark, index) => {
+      const markValue =
+        mark.type === "Экзамен"
+          ? `<select onchange="getSelectMark(this)" id="mark_id-${
+            mark.mark_id
+          }-${mark.student_id}" class="select-mark col-span-5 border p-3">
+          <option ${!mark.value && "selected"} value="">нет</option>
+          <option ${
+            mark.value === "Отлично" && "selected"
+          } value="Отлично">Отлично</option>
+          <option ${
+            mark.value === "Хорошо" && "selected"
+          } value="Хорошо">Хорошо</option>
+          <option ${
+            mark.value === "Удовлетворительно" && "selected"
+          } value="Удовлетворительно">Удовлетворительно</option>
+          <option ${
+            mark.value === "Неудовлетворительно" && "selected"
+          } value="Неудовлетворительно">Неудовлетворительно</option>
+        </select>`
+          : `<select onchange="getSelectMark(this)" id="mark_id-${
+            mark.mark_id
+          }-${mark.student_id}" class="select-mark col-span-5 border p-3">
+          <option ${!mark.value && "selected"} value="">нет</option>
+          <option ${
+            mark.value === "Зачтено" && "selected"
+          } value="Зачтено">Зачтено</option>
+          <option ${
+            mark.value === "Не зачтено" && "selected"
+          } value="Не зачтено">Не зачтено</option>
+        </select>`;
+
+      list.innerHTML += `
+      <div class = "col-span-1 border flex justify-center items-center py-3">${
+        index + 1
+      }</div>
+      <div class = "col-span-6 border p-3">${mark.lastname} ${mark.firstname} ${
+        mark.secondname
+      }</div>
+      ${markValue}`;
+    });
+  };
+
+  const getSelectMark = async (selectObject) => {
+    console.log(selectObject);
+    console.log(
+      selectObject.id.split("-")[1],
+      selectObject.id.split("-")[2],
+      selectObject.id.split("-")[1] === "null"
+    );
+    if (selectObject.id.split("-")[1] === "null") {
+      return await fetch("/api/addMark?", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          student_id:selectObject.id.split("-")[2], disciplines_id:disciplineId, value:selectObject.value, teacher_id:teacherAvailable[0].teacher_id, hours:marks[0].hours
+        })
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          selectObject.id = `mark_id-${res.id}-${res.student_id}`;
+          return res;
+        });
+    } else {
+      return await fetch(
+        "/api/changeMark?" +
+        new URLSearchParams({
+          value: selectObject.value,
+          mark_id: selectObject.id.split("-")[1]
+        }),
+        { method: "PUT" }
+      )
+        .then((res) => res.json())
+        .then((res) => res);
+    }
+  };
+
+  const groupBy = function(xs, key) {
+    return xs.reduce(function(rv, x) {
+      (rv[x[key]] = rv[x[key]] || []).push(x);
+      return rv;
+    }, {});
+  };
+
+  const fillSelect = () => {
+    console.log(userData);
+    console.log(teacherAvailable);
+    const list = document.getElementById("select-group-discipline");
+    list.innerHTML = "<option selected>Выберите группу из списка</option>";
+    teacherAvailable.map((group) => {
+      list.innerHTML += `<option value="${group.group_id}-${group.discipline_id}">${group.name} – ${group.discipline_name}</option>`;
+    });
+  };
+
+  const onChangeSelect = (a) => {
+    disciplineId = a.value.split("-")[1];
+    getMarks(a.value.split("-")[0], a.value.split("-")[1]).then((res) => {
+        marks = res;
+        generateMarksList(marks);
+      }
+    );
+  };
+
+  const getTeacherAvailable = async () => {
+    await fetch("/api/getTeacherAvailable")
+      .then((res) => res.json())
+      .then((res) => {
+        teacherAvailable = res;
+      });
+    return teacherAvailable;
+  };
+
+  const getUserData = async () => {
+    return await fetch("/api/getUserData")
+      .then((res) => res.json())
+      .then((res) => {
+        userData = res;
+        return res;
+      });
+  };
+
+  const getMarks = async (group_id, discipline_id) => {
+    return await fetch(
+      "/api/getGroupMarks?" +
+      new URLSearchParams({
+        group_id: group_id,
+        discipline_id: discipline_id
+      })
+    )
+      .then((res) => res.json())
+      .then((res) => res);
+  };
+
+  getUserData()
+    .then(getTeacherAvailable)
+    .then((res) => {
+      teacherAvailable = res;
+      fillSelect();
+    });
+</script>

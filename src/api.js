@@ -9,7 +9,11 @@ const {
   addStudent,
   getStudentMarks,
   getStudentInfo,
-  getDisciplines
+  getDisciplines,
+  getTeacherAvailable,
+  getGroupMarks,
+  changeMark,
+  addMark
 } = require("./database");
 const apiRouter = express.Router();
 
@@ -29,6 +33,14 @@ apiRouter.get("/getUserData", (req, res) => {
   delete user.login;
   delete user.password;
   req.session.authenticated ? res.json(user) : res.redirect("/authorization");
+});
+
+apiRouter.get("/getTeacherAvailable", async (req, res) => {
+  console.log("query", req.query);
+  console.log("body", req.body);
+  const data = await getTeacherAvailable(req.session.user.id);
+  // req.session.authenticated ? res.json(data) : res.redirect("/authorization");
+  res.json(data);
 });
 
 apiRouter.get("/groups", async (req, res) => {
@@ -71,6 +83,13 @@ apiRouter.get("/getStudentMarks", async (req, res) => {
   req.session.authenticated ? res.json(await getStudentMarks(req.query.id)) : res.redirect("/authorization");
 });
 
+apiRouter.get("/getGroupMarks", async (req, res) => {
+  console.log("query", req.query);
+  req.session.authenticated && req.session.user.role === "teacher" ?
+    res.json(await getGroupMarks(req.query["group_id"], req.query["discipline_id"]))
+   : res.redirect("/authorization");
+});
+
 apiRouter.get("/getStudentInfo", async (req, res) => {
   const studentId = req.query.id ? req.query.id : req.session.user.id;
   req.session.authenticated ? res.json(await getStudentInfo(req.session.user.id)) : res.redirect("/authorization");
@@ -97,6 +116,16 @@ apiRouter.post("/students", async (req, res) => {
   res.json(data);
   // req.session.authenticated ? res.json(data) : res.redirect("/authorization");
 });
+
+apiRouter.post('/addMark',async (req,res)=>{
+  console.log("body", req.body);
+  res.json(await addMark(req.body["student_id"], req.body['disciplines_id'], req.body['value'], req.body['teacher_id'], req.body['hours']))
+})
+
+apiRouter.put("/changeMark", async (req,res)=>{
+  console.log("query", req.query);
+  res.json(await changeMark(req.query['value'],req.query['mark_id']))
+})
 
 
 module.exports = {
