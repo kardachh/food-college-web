@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Учебный план</title>
+  <link rel="stylesheet" type="text/css" href="/static/css/output.css" />
+</head>
+<body>
+<!-- left-menu -->
+<div
+  id="left-menu"
+  class="fixed z-50 bg-white top-0 left-0 min-w-[135px] min-h-[600px] shadow-xl rounded-r-2xl flex flex-col justify-around items-center"
+>
+  <a href="/">
+    <img src="/static/images/user.svg" alt="user" />
+  </a>
+  <a href="/">
+    <img src="/static/images/home.svg" alt="user" />
+  </a>
+  <a href="/">
+    <img src="/static/images/list.svg" alt="user" />
+  </a>
+  <a href="/record-book">
+    <img src="/static/images/book.svg" alt="user" />
+  </a>
+  <a href="/">
+    <img src="/static/images/phone-call.svg" alt="user" />
+  </a>
+  <a href="/">
+    <img src="/static/images/info.svg" alt="user" />
+  </a>
+  <a href="/">
+    <img src="/static/images/hide.svg" alt="user" />
+  </a>
+</div>
+
+<div class="relative left-[135px] m-10 w-[70%]">
+  <div class="text-[32px]">Учебный план</div>
+  <div class="flex justify-around m-10">
+    <div class="w-[350px]">
+      <select
+        id="select-group"
+        onchange="onChangeSelectGroup(this);"
+        class="form-select appearance-none w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+      ></select>
+    </div>
+    <div class="w-[350px]">
+      <select
+        id="select-semester"
+        onchange="onChangeSelectSemester(this);"
+        disabled
+        class="form-select appearance-none w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+      ></select>
+    </div>
+  </div>
+  <div id="discipline-grid" class="shadow-xl rounded-2xl"></div>
+  <div id="buttons" style="visibility: hidden;" class="flex justify-around items-center w-[20%] mt-10">
+    <img
+      id="add-discipline"
+      class="cursor-pointer opacity-25 hover:opacity-100"
+      src="/static/images/add.svg"
+      alt="Добавить дисциплину"
+    />
+    <img
+      id="update-discipline"
+      class="cursor-pointer opacity-25 hover:opacity-100"
+      src="/static/images/edit.svg"
+      alt="Изменить дисциплину"
+    />
+    <img
+      id="delete-discipline"
+      class="cursor-pointer opacity-25 hover:opacity-100"
+      src="/static/images/close.svg"
+      alt="Удалить дисциплину"
+    />
+  </div>
+</div>
+</body>
+</html>
+
+<script>
+  let groups;
+  let disciplines;
+  let studyPlans;
+  let semesters;
+
+  let selectedGroupId;
+  let selectedSemester;
+  let selectedGroupStudyPlan;
+
+  const getGroups = async () => {
+    return await fetch("/api/groups")
+      .then((res) => res.json())
+      .then((res) => {
+        groups = res;
+        return res;
+      });
+  };
+
+  const getDisciplines = async () => {
+    return await fetch("/api/disciplines")
+      .then((res) => res.json())
+      .then((res) => {
+        disciplines = res;
+        return res;
+      });
+  };
+
+  const getStudyPlans = async () => {
+    await fetch("/api/study-plans")
+      .then((res) => res.json())
+      .then((res) => {
+        studyPlans = res;
+      });
+    return studyPlans;
+  };
+
+  const addStudyPlans = (data) => {
+    console.log("add", data);
+    fetch("/api/study-plans", {
+      method: "post",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        // teachersAvailable = res;
+      });
+    // return teachersAvailable;
+  };
+
+  const checkButtonsVisible = () => {
+    console.log(selectedGroupId, selectedSemester)
+    document.getElementById("buttons").style.visibility = !(selectedGroupId && selectedSemester) ? "hidden" : "visible";
+  };
+
+  const checkStudyPlan = () => {
+    semesters = studyPlans.filter((plan) => parseInt(plan.group_id) === parseInt(selectedGroupId)).map(plan => plan.semester).filter((value, index, self) => self.indexOf(value) === index);
+    document.getElementById("select-semester").disabled = !selectedGroupId;
+    selectedGroupStudyPlan = studyPlans.filter((plan) => parseInt(plan.group_id) === parseInt(selectedGroupId) &&
+      parseInt(plan.semester) === parseInt(selectedSemester));
+    generateDisciplines();
+  };
+
+  const onChangeSelectGroup = (selectGroup) => {
+    selectedSemester = null;
+    selectedGroupId = selectGroup.value;
+    checkStudyPlan();
+    fillSelectSemester();
+    checkButtonsVisible();
+  };
+
+  const onChangeSelectSemester = (selectSemester) => {
+    selectedSemester = selectSemester.value;
+    checkStudyPlan();
+    checkButtonsVisible();
+  };
+
+  const fillSelectGroup = () => {
+    document.getElementById("select-group").innerHTML = `<option value="" selected>Выберите группу из списка</option>`;
+    groups.map((group) => {
+      document.getElementById("select-group").innerHTML += `<option value="${group.id}">${group.name}</option>`;
+    });
+  };
+
+  const fillSelectSemester = () => {
+    document.getElementById("select-semester").innerHTML = `<option value="" selected>Выберите семестр из списка</option>`;
+    !!semesters && semesters.map((semester) => {
+      document.getElementById("select-semester").innerHTML += `<option value="${semester}">${semester} семестр</option>`;
+    });
+  };
+
+  const generateDisciplines = () => {
+    const disciplineGrid = document.getElementById("discipline-grid");
+    disciplineGrid.innerHTML = "";
+      console.log(selectedGroupStudyPlan)
+    if (selectedGroupStudyPlan && selectedGroupStudyPlan.length!==0) {
+      disciplineGrid.innerHTML = `
+      <div class="grid grid-cols-12 rounded-tr-2xl rounded-tl-2xl ">
+        <div class="col-span-1 p-3 border rounded-tl-2xl">№</div>
+        <div class="col-span-5 p-3 border">Наименование дисциплины</div>
+        <div class="col-span-3 p-3 border">Кол-во часов</div>
+        <div class="col-span-3 p-3 border rounded-tr-2xl">Тип</div>
+      </div>`;
+      disciplineGrid.innerHTML += selectedGroupStudyPlan.map((plan, index,self) => {
+        console.log()
+        return `
+        <div class="grid grid-cols-12 ${index===self.length-1 && "rounded-bl-2xl rounded-br-2xl"}">
+          <div class="col-span-1 p-3 border ${index===self.length-1 && "rounded-bl-2xl"}">${index+1}</div>
+          <div class="col-span-5 p-3 border">${disciplines.find(discipline=>parseInt(discipline.id)===parseInt(plan.disciplines_id)).name}</div>
+          <div class="col-span-3 p-3 border">${plan.hours}</div>
+          <div class="col-span-3 p-3 border ${index===self.length-1 && "rounded-br-2xl"}">${plan.type}</div>
+        </div>`;
+      }).join("");
+    }
+  };
+
+  const getData = async () => {
+    await getGroups();
+    await getDisciplines();
+    await getStudyPlans();
+    fillSelectGroup();
+
+    console.table(groups);
+    console.table(disciplines);
+    console.table(studyPlans);
+  };
+
+  getData();
+</script>

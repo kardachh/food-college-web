@@ -65,15 +65,15 @@ module.exports = {
 
   addTeacherAvailable: async (data) => {
     try {
-      console.log("add",data)
+      console.log("add", data);
       if (data) {
         const addTeacherAvailable = async () => {
           const client = new Client({
             connectionString
           });
           client.connect();
-          const query = `INSERT INTO available_groups (teacher_id, group_id, disciplines_id) values (${data.teacher_id},${data.group_id},${data.discipline_id});`
-          console.log(query)
+          const query = `INSERT INTO available_groups (teacher_id, group_id, disciplines_id) values (${data.teacher_id},${data.group_id},${data.discipline_id});`;
+          console.log(query);
           return await client
             .query(query)
             .then(() => {
@@ -96,7 +96,7 @@ module.exports = {
 
   removeTeacherAvailable: async (data) => {
     try {
-      console.log("remove",data)
+      console.log("remove", data);
       if (data) {
         const removeTeacherAvailable = async () => {
           const client = new Client({
@@ -239,14 +239,14 @@ module.exports = {
 
         const addUser = async () => {
           return await client
-            .query(`INSERT INTO public.users (firstname, lastname, secondname, "role", login, "password") VALUES('${data.firstname}', '${data.lastname}', '${data.secondname}', 'student','${data.login}' , '${data.password}') RETURNING id`)
+            .query(`INSERT INTO users (firstname, lastname, secondname, "role", login, "password") VALUES('${data.firstname}', '${data.lastname}', '${data.secondname}', 'student','${data.login}' , '${data.password}') RETURNING id`)
             .then((res) => res.rows[0].id).then((res) => res)
             .catch((e) => {
               console.error("Ошибка при добавлении студента", data, e);
             });
         };
         const addStudent = async (id) => {
-          return await client.query(`INSERT INTO public.students (user_id, group_id) VALUES(${id}, ${data.group_id});`)
+          return await client.query(`INSERT INTO students (user_id, group_id) VALUES(${id}, ${data.group_id});`)
             .then(() => {
               client.end();
               return "OK";
@@ -272,14 +272,14 @@ module.exports = {
   //
   //       const removeUser = async () => {
   //         return await client
-  //           .query(`Delete from public.users where id=${user_id}`)
+  //           .query(`Delete from users where id=${user_id}`)
   //           .then((res) => res.rows[0].id).then((res) => res)
   //           .catch((e) => {
   //             console.error("Ошибка при добавлении студента", data, e);
   //           });
   //       };
   //       const removeStudent = async (id) => {
-  //         return await client.query(`DELETE FROM public.students WHERE user_id=${id};`)
+  //         return await client.query(`DELETE FROM students WHERE user_id=${id};`)
   //           .then(() => {
   //             client.end();
   //             return "OK";
@@ -295,7 +295,6 @@ module.exports = {
   //   }
   // },
 
-
   getStudentMarks: async (student_id) => {
     try {
       const getStudentMarks = async () => {
@@ -304,7 +303,7 @@ module.exports = {
         });
         client.connect();
         return await client
-          .query(`SELECT id, semester, group_id, group_name, student_id, disciplines_id, "name", "hours passed" as "hours_passed", "hours all" as "hours_all", "type", value FROM public.student_marks where student_id=${student_id};`)
+          .query(`SELECT id, semester, group_id, group_name, student_id, disciplines_id, "name", "hours passed" as "hours_passed", "hours all" as "hours_all", "type", value FROM student_marks where student_id=${student_id};`)
           .then((res) => {
             client.end();
             return res.rows;
@@ -324,7 +323,7 @@ module.exports = {
         });
         client.connect();
         return await client
-          .query(`SELECT user_id, student_id, firstname, lastname, secondname, group_id, group_name, code, speciality_name, short_name FROM public.student_info where user_id=${user_id};`)
+          .query(`SELECT user_id, student_id, firstname, lastname, secondname, group_id, group_name, code, speciality_name, short_name FROM student_info where user_id=${user_id};`)
           .then((res) => {
             client.end();
             return res.rows[0];
@@ -344,7 +343,7 @@ module.exports = {
         });
         client.connect();
         return await client
-          .query(`SELECT id, "name", hours, "type" FROM public.disciplines;`)
+          .query(`SELECT id, "name" FROM disciplines;`)
           .then((res) => {
             client.end();
             return res.rows;
@@ -364,7 +363,7 @@ module.exports = {
         });
         client.connect();
         return await client
-          .query(`SELECT id, firstname, lastname, secondname, "role" FROM public.users;`)
+          .query(`SELECT id, firstname, lastname, secondname, "role" FROM users;`)
           .then((res) => {
             client.end();
             return res.rows;
@@ -374,14 +373,16 @@ module.exports = {
     } catch (e) {
       return { type: "error", msg: "Ошибка при вылонении запроса: " + e };
     }
-  }, addMark: async (student_id, disciplines_id, value, teacher_id, hours) => {
+  },
+
+  addMark: async (student_id, disciplines_id, value, teacher_id, hours) => {
     try {
       const addMark = async () => {
         const client = new Client({
           connectionString
         });
         client.connect();
-        const query = `INSERT INTO public.marks (student_id, disciplines_id, value, teacher_id, hours) VALUES(${student_id}, ${disciplines_id}, '${value}', ${teacher_id}, ${hours}) RETURNING *;`;
+        const query = `INSERT INTO marks (student_id, disciplines_id, value, teacher_id, hours) VALUES(${student_id}, ${disciplines_id}, '${value}', ${teacher_id}, ${hours}) RETURNING *;`;
         return await client
           .query(query)
           .then((res) => {
@@ -402,7 +403,7 @@ module.exports = {
           connectionString
         });
         client.connect();
-        const query = `UPDATE public.marks SET value='${value}'  WHERE id=${mark_id};`;
+        const query = `UPDATE marks SET value='${value}'  WHERE id=${mark_id};`;
         return await client
           .query(query)
           .then((res) => {
@@ -432,6 +433,104 @@ module.exports = {
           });
       };
       return await getTeachers().then(res => res);
+    } catch (e) {
+      return { type: "error", msg: "Ошибка при вылонении запроса: " + e };
+    }
+  },
+
+  getStudyPlans: async () => {
+    try {
+      const getStudyPlans = async () => {
+        const client = new Client({
+          connectionString
+        });
+        client.connect();
+        return await client
+          .query(`SELECT id, group_id, disciplines_id, semester, hours, "type" FROM study_plan;`)
+          .then((res) => {
+            client.end();
+            return res.rows;
+          });
+      };
+      return await getStudyPlans().then(res => res);
+    } catch (e) {
+      return { type: "error", msg: "Ошибка при вылонении запроса: " + e };
+    }
+  },
+
+  /**
+   * @param info : {id:number,group_id:number,disciplines_id:number,semester:number,hours:number,type:string}
+   * @returns {Promise<{msg: string, type: string}|*>}
+   */
+  addStudyPlan: async (info) => {
+    try {
+      const addStudyPlan = async () => {
+        const client = new Client({
+          connectionString
+        });
+        client.connect();
+        const query = `INSERT INTO study_plan (group_id, disciplines_id, semester, hours, "type") VALUES(${info.group_id}, ${info.disciplines_id}, ${info.semester}, ${info.hours}, '${info.type}');`;
+        return await client
+          .query(query)
+          .then((res) => {
+            client.end();
+            return res.rows;
+          });
+      };
+      return await addStudyPlan().then(res => res);
+    } catch (e) {
+      return { type: "error", msg: "Ошибка при вылонении запроса: " + e };
+    }
+  },
+
+  /**
+   * @param info : {id:number,group_id:number,disciplines_id:number,semester:number,hours:number,type:string}
+   * @returns {Promise<{msg: string, type: string}|*>}
+   */
+  updateStudyPlan: async (info) => {
+    try {
+      const updateStudyPlan = async () => {
+        const client = new Client({
+          connectionString
+        });
+        client.connect();
+        return await client
+          .query(`UPDATE study_plan SET group_id=${info.group_id}, disciplines_id=${info.disciplines_id}, semester=${info.semester}, hours=${info.hours}, "type"=${info.type} WHERE id=0;`)
+          .then(() => {
+            client.end();
+            return "OK";
+          });
+      };
+      return await updateStudyPlan().then(res => res);
+    } catch (e) {
+      return { type: "error", msg: "Ошибка при вылонении запроса: " + e };
+    }
+  },
+
+  /**
+   * @param id : id:number
+   * @returns {Promise<{msg: string, type: string}|*>}
+   */
+  removeStudyPlan: async (id) => {
+    try {
+      if (data) {
+        const removeStudyPlan = async () => {
+          const client = new Client({
+            connectionString
+          });
+          client.connect();
+          return await client
+            .query(`DELETE FROM study_plan WHERE id=${id};`)
+            .then(() => {
+              client.end();
+              return "OK";
+            });
+        };
+        return await removeStudyPlan().then(res => res);
+      } else {
+        console.log(data);
+        return { type: "error", msg: "Пустые поля" };
+      }
     } catch (e) {
       return { type: "error", msg: "Ошибка при вылонении запроса: " + e };
     }

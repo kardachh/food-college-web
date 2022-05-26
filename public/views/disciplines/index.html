@@ -18,6 +18,26 @@
   <div class="relative left-[135px] m-10 w-[85%]">
     <div class="text-[32px]">Дисциплины</div>
     <div id="disciplines" class="mt-10  rounded-2xl overflow-hidden grid grid-cols-12 shadow-2xl mb-[70px]"></div>
+    <div class="flex justify-around items-center w-[20%]">
+      <img
+        id="add-student"
+        class="cursor-pointer opacity-25 hover:opacity-100"
+        src="/static/images/add.svg"
+        alt="Добавить дисциплину"
+      />
+      <img
+        id="update-student"
+        class="cursor-pointer opacity-25 hover:opacity-100"
+        src="/static/images/edit.svg"
+        alt="Изменить дисциплину"
+      />
+      <img
+        id="delete-student"
+        class="cursor-pointer opacity-25 hover:opacity-100"
+        src="/static/images/close.svg"
+        alt="Удалить дисциплину"
+      />
+    </div>
   </div>
 </div>
 
@@ -55,9 +75,7 @@
     const list = document.getElementById("disciplines");
     const headers = `
       <div class = "col-span-1 border flex justify-center items-center py-3 font-bold rounded-tl-2xl">№</div>
-      <div class = "col-span-4 border flex justify-center items-center py-3 font-bold">Наименование</div>
-      <div class = "col-span-4 border flex justify-center items-center py-3 font-bold">Общее кол-во час/ед</div>
-      <div class = "col-span-3 border flex justify-center items-center py-3 font-bold rounded-tr-2xl">Тип</div>
+      <div class = "col-span-11 border flex justify-center items-center py-3 font-bold">Наименование</div>
     `;
     list.innerHTML = `${headers}`;
     disciplines.forEach((discipline, index) => {
@@ -65,9 +83,7 @@
       <div class = "col-span-1 border flex justify-center items-center py-3">${
         index + 1
       }</div>
-      <div class = "col-span-4 border p-3">${discipline.name}</div>
-      <div class = "col-span-4 border p-3">${discipline.hours}</div>
-      <div class = "col-span-3 border p-3">${discipline.type}</div>
+      <div class = "col-span-11 border p-3">${discipline.name}</div>
     `;
     });
   };

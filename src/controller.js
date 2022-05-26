@@ -54,6 +54,12 @@ router.get("/available", (req, res) => {
     : res.redirect("/authorization");
 });
 
+router.get("/study-plan", (req, res) => {
+  req.session.authenticated
+    ? req.session.user.role==='admin' ? res.sendFile(path.join(path.resolve(), "/public/views/study-plan/index.html")): res.sendStatus(404)
+    : res.redirect("/authorization");
+});
+
 router.get("/authorization", (req, res) => {
   req.session.authenticated
     ? res.redirect("/")
@@ -61,7 +67,9 @@ router.get("/authorization", (req, res) => {
         path.join(path.resolve(), "/public/views/authorization/index.html")
       );
 });
-
+/**
+ * @param req.session.user : {role:string}
+ */
 router.post("/login", async (req, res) => {
   const { login, password } = req.body;
   if (login && password) {
