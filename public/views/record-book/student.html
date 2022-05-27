@@ -18,7 +18,8 @@
   <div class="relative left-[135px] m-10 w-[85%]">
     <div class="text-[32px]">Зачетная книжка</div>
     <div class="my-5 flex">
-      <img src="/static/images/placeholder_photo.png" class="w-[170px] mr-5">
+<!--      <img src="/static/images/placeholder_photo.png" class="w-[170px] mr-5">-->
+      <img src="https://sun9-58.userapi.com/s/v1/if2/5C6SDt8pUOVBdC2JjsLKkFm9PZ9-mMDovgZMVxutIWC2QfgQi-WoLEqIvJoLv_NzFlmUYbQ6h9fHrg8M7RSlG4ut.jpg?size=1184x1600&quality=95&type=album" class="w-[170px] mr-5 rounded-2xl">
       <div class="flex flex-col">
         <div id="fio" class="text-[24px] font-[400] mb-4"></div>
         <div id="codename"></div>
@@ -124,9 +125,8 @@
       <div class = "col-span-2 border flex justify-center items-center py-3 font-bold">Наименование</div>
       <div class = "col-span-2 border flex justify-center items-center py-3 font-bold">Общее кол-во час/ед</div>
       <div class = "col-span-1 border flex justify-center items-center py-3 font-bold">Тип</div>
-      <div class = "col-span-2 border flex justify-center items-center py-3 font-bold">Дата сдачи</div>
       <div class = "col-span-3 border flex justify-center items-center py-3 font-bold">Преподаватель</div>
-      <div class = "col-span-1 border flex justify-center items-center py-3 font-bold rounded-tr-2xl">Итог</div>
+      <div class = "col-span-3 border flex justify-center items-center py-3 font-bold rounded-tr-2xl">Итог</div>
     `;
     list.innerHTML = `${headers}`;
     marks.forEach((mark, index) => {
@@ -137,9 +137,8 @@
       <div class = "col-span-2 border p-3">${mark.name}</div>
       <div class = "col-span-2 border p-3">${mark.hours_passed} из ${mark.hours_all}</div>
       <div class = "col-span-1 border p-3">${mark.type}</div>
-      <div class = "col-span-2 border p-3">Дата сдачи</div>
-      <div class = "col-span-3 border p-3">Преподаватель</div>
-      <div class = "col-span-1 border p-3">${mark.value}</div>
+      <div class = "col-span-3 border p-3">${mark.t_lastname} ${mark.t_firstname} ${mark.t_secondname}</div>
+      <div class = "col-span-3 border p-3">${mark.value}</div>
     `;
     });
   };

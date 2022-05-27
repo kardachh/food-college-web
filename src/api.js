@@ -20,7 +20,8 @@ const {
   getStudyPlans,
   addStudyPlan,
   updateStudyPlan,
-  removeStudyPlan
+  removeStudyPlan,
+  getSpecialities
 } = require("./database");
 const apiRouter = express.Router();
 
@@ -70,6 +71,12 @@ apiRouter.delete("/teacherAvailable", async (req, res) => {
 
 apiRouter.get("/groups", async (req, res) => {
   const data = await getGroups();
+  // req.session.authenticated ? res.json(data) : res.redirect("/authorization");
+  res.json(data);
+});
+
+apiRouter.get("/specialities", async (req, res) => {
+  const data = await getSpecialities();
   // req.session.authenticated ? res.json(data) : res.redirect("/authorization");
   res.json(data);
 });

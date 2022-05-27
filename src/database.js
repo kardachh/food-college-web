@@ -10,7 +10,7 @@ module.exports = {
         });
         client.connect();
         return await client
-          .query(`SELECT * from "users" where login='${login}' and password='${password}'`)
+          .query(`SELECT u.*,rt.name as "role" from "users" u join role_type rt on u.role_type_id = rt.id where login='${login}' and password='${password}'`)
           .then((res) => {
             client.end();
             return res.rows;
@@ -37,6 +37,26 @@ module.exports = {
           });
       };
       return await getGroups().then(res => res);
+    } catch (e) {
+      return { type: "error", msg: "Ошибка при вылонении запроса: " + e };
+    }
+  },
+
+  getSpecialities: async () => {
+    try {
+      const getSpecialities = async () => {
+        const client = new Client({
+          connectionString
+        });
+        client.connect();
+        return await client
+          .query(`SELECT * FROM specialties;`)
+          .then((res) => {
+            client.end();
+            return res.rows;
+          });
+      };
+      return await getSpecialities().then(res => res);
     } catch (e) {
       return { type: "error", msg: "Ошибка при вылонении запроса: " + e };
     }
@@ -127,8 +147,10 @@ module.exports = {
           connectionString
         });
         client.connect();
+        const query = `SELECT * from "marks_v" where disciplines_id=${discipline_id} and group_id=${group_id}`
+        console.log(query)
         return await client
-          .query(`SELECT * from "marks_v" where disciplines_id=${discipline_id} and group_id=${group_id}`)
+          .query(query)
           .then((res) => {
             client.end();
             return res.rows;
@@ -176,11 +198,11 @@ module.exports = {
         });
         client.connect();
         return await client
-          .query(`UPDATE "groups" SET "name"='${data.name}' WHERE id=${data.id};`)
+          .query(`UPDATE "groups" SET "name"='${data.name}',speciality_id=${data.speciality_id} WHERE id=${data.id};`)
           .then(() => {
             client.end();
             return "OK";
-          });
+          }).catch((e)=>console.log(e))
       };
       return await updateGroup().then(res => res);
     } catch (e) {
@@ -303,7 +325,7 @@ module.exports = {
         });
         client.connect();
         return await client
-          .query(`SELECT id, semester, group_id, group_name, student_id, disciplines_id, "name", "hours passed" as "hours_passed", "hours all" as "hours_all", "type", value FROM student_marks where student_id=${student_id};`)
+          .query(`SELECT * FROM student_marks where student_id=${student_id};`)
           .then((res) => {
             client.end();
             return res.rows;
@@ -363,7 +385,7 @@ module.exports = {
         });
         client.connect();
         return await client
-          .query(`SELECT id, firstname, lastname, secondname, "role" FROM users;`)
+          .query(`SELECT u.*,rt.name as "role" from "users" u join role_type rt on u.role_type_id = rt.id;`)
           .then((res) => {
             client.end();
             return res.rows;
@@ -382,12 +404,15 @@ module.exports = {
           connectionString
         });
         client.connect();
-        const query = `INSERT INTO marks (student_id, disciplines_id, value, teacher_id, hours) VALUES(${student_id}, ${disciplines_id}, '${value}', ${teacher_id}, ${hours}) RETURNING *;`;
+        const query = `INSERT INTO marks (student_id, disciplines_id, mark_type_id, teacher_id, hours) VALUES(${student_id}, ${disciplines_id}, '${value}', ${teacher_id}, ${hours}) RETURNING *;`;
+            console.log(query)
         return await client
           .query(query)
           .then((res) => {
             client.end();
             return res.rows;
+          }).catch((e) => {
+            console.error("Ошибка при добавлении оценки", data, e);
           });
       };
       return await addMark().then(res => res);
@@ -403,12 +428,14 @@ module.exports = {
           connectionString
         });
         client.connect();
-        const query = `UPDATE marks SET value='${value}'  WHERE id=${mark_id};`;
+        const query = `UPDATE marks SET mark_type_id='${value}'  WHERE id=${mark_id};`;
         return await client
           .query(query)
           .then((res) => {
             client.end();
             return res.rows[0].message;
+          }).catch((e) => {
+            console.error("Ошибка при изменении оценки", data, e);
           });
       };
       return await changeMark().then(res => res);

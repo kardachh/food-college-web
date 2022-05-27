@@ -85,23 +85,23 @@
 
     marks.forEach((mark, index) => {
       const markValue =
-        mark.type === "Экзамен"
+        parseInt(mark.exam_type_id) === 2
           ? `<select onchange="getSelectMark(this)" id="mark_id-${
             mark.mark_id
           }-${mark.student_id}" class="select-mark col-span-5 border p-3">
-          <option ${!mark.value && "selected"} value="">нет</option>
+          <option ${!mark.value && "selected"} value="7">нет</option>
           <option ${
             mark.value === "Отлично" && "selected"
-          } value="Отлично">Отлично</option>
+          } value="6">Отлично</option>
           <option ${
             mark.value === "Хорошо" && "selected"
-          } value="Хорошо">Хорошо</option>
+          } value="5">Хорошо</option>
           <option ${
             mark.value === "Удовлетворительно" && "selected"
-          } value="Удовлетворительно">Удовлетворительно</option>
+          } value="4">Удовлетворительно</option>
           <option ${
             mark.value === "Неудовлетворительно" && "selected"
-          } value="Неудовлетворительно">Неудовлетворительно</option>
+          } value="3">Неудовлетворительно</option>
         </select>`
           : `<select onchange="getSelectMark(this)" id="mark_id-${
             mark.mark_id
@@ -109,10 +109,10 @@
           <option ${!mark.value && "selected"} value="">нет</option>
           <option ${
             mark.value === "Зачтено" && "selected"
-          } value="Зачтено">Зачтено</option>
+          } value="1">Зачтено</option>
           <option ${
             mark.value === "Не зачтено" && "selected"
-          } value="Не зачтено">Не зачтено</option>
+          } value="2">Не зачтено</option>
         </select>`;
 
       list.innerHTML += `
@@ -141,7 +141,11 @@
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          student_id:selectObject.id.split("-")[2], disciplines_id:disciplineId, value:selectObject.value, teacher_id:teacherAvailable[0].teacher_id, hours:marks[0].hours
+          student_id:selectObject.id.split("-")[2],
+          disciplines_id:disciplineId,
+          value:selectObject.value,
+          teacher_id:teacherAvailable[0].teacher_id,
+          hours:marks[0].hours
         })
       })
         .then((res) => res.json())
@@ -183,6 +187,7 @@
   const onChangeSelect = (a) => {
     disciplineId = a.value.split("-")[1];
     getMarks(a.value.split("-")[0], a.value.split("-")[1]).then((res) => {
+        console.log('marks',res)
         marks = res;
         generateMarksList(marks);
       }
